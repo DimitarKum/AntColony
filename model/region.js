@@ -9,19 +9,26 @@ AntColony.Region = function(params){
     this.tile = params.tile;
     this.buildings = [];
     this.items = [];
+    this.isChanged = true;
 };
 
 AntColony.Region.prototype.setChanged = function(){
-    this.forEachEntity(function(entity){
-        entity.isChanged = true;
-    });
+    if(!this.isChanged){
+        this.isChanged = true;
+        this.forEachEntity(function(entity){
+            entity.isChanged = true;
+        });
+    }
 };
 
 
 AntColony.Region.prototype.setUnchanged = function(){
-    this.forEachEntity(function(entity){
-        entity.isChanged = false;
-    });
+    if(this.isChanged){
+        this.isChanged = false;
+        this.forEachEntity(function(entity){
+            entity.isChanged = false;
+        });
+    }
 };
 
 AntColony.Region.prototype.forEachEntity = function(callback){

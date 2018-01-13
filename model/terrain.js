@@ -3,11 +3,31 @@
 var AntColony = AntColony || {};
 
 AntColony.Tile = function(params){
-    AntColony.validateParams(params, "terrainType", "x", "y");
+    AntColony.validateParams(params, "terrainType", "gridX", "gridY", "scale");
     this.terrainType = params.terrainType;
-    this.x = params.x;
-    this.y = params.y;
+    this.gridX = params.gridX;
+    this.gridY = params.gridY;
+
+    this.x = this.gridX * params.scale;
+    this.y = this.gridY * params.scale;
+    this.width =  params.scale;
+    this.height = params.scale;
     this.isChanged = true;
+
+    const animation = new AntColony.Animation({
+        entity: this,
+        spriteSheet: "./assets/Tiles.png",
+        frameStartX: 32 * this.terrainType,
+        frameStartY: 832,
+        frameWidth: 32,
+        frameHeight: 32,
+        frameCount: 1,
+        framesPerSecond: 0
+    });
+
+    this.draw = function(params){
+        animation.draw(params);
+    };
 };
 
 
@@ -99,7 +119,9 @@ AntColony.startAnIsle = function(params){
             }
         });
 };
-AntColony.createTiles = function(width, height){
+AntColony.createTiles = function(params){
+    AntColony.validateParams(params, "columns", "rows", "scale");
+    const width = params.columns, height = params.rows, scale = params.scale;
     const tileGrid = new AntColony.Grid({width: width, height: height});
     tileGrid.setEachElement(function(params){
         // validateParams(params, "currentElement", "i", "j");
@@ -127,8 +149,9 @@ AntColony.createTiles = function(width, height){
     const tileArray = [];
     (new AntColony.Grid({width: width, height: height})).forEach(function(params){
         tileArray.push(new AntColony.Tile({
-            x: params.i,
-            y: params.j,
+            gridX: params.i,
+            gridY: params.j,
+            scale: scale,
             terrainType: tileGrid.getElement(params.i, params.j)
         }));
     });

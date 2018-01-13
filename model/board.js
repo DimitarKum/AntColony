@@ -8,7 +8,11 @@ AntColony.Board = function(params){
     this.height = params.height;
     this.scale = params.scale;
     this.regionGrid = new AntColony.Grid({width: this.width, height: this.height});
-    this.tiles = AntColony.createTiles(this.width, this.height);
+    this.tiles = AntColony.createTiles({
+        columns: this.width,
+        rows: this.height,
+        scale: this.scale
+    });
     this.init();
 
     this.canvas = params.canvas;
@@ -23,10 +27,9 @@ AntColony.Board = function(params){
 AntColony.Board.prototype.init = function(){
     const that = this;
     this.tiles.forEach(function(tile){
-        // validateParams(params, "currentElement", "i", "j");
         that.regionGrid.setElement({
-            i: tile.x,
-            j: tile.y,
+            i: tile.gridX,
+            j: tile.gridY,
             value: new AntColony.Region({tile: tile})
         });
     });
@@ -41,14 +44,13 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
             region.setChanged();
         });
     };
-    // buildingToAdd.hasChanged = this.regionGrid.getElement(buildingToAdd.x / this.scale, buildingToAdd.y / this.scale).getHasChanged();
     
     const that = this;
     buildingToAdd.changePosition = function(x, y){
         buildingToAdd.hasChanged();
 
         buildingToAdd.regionsOccupied.forEach(function(region){
-            region.buildings.splice(region.buildings.indexOf(buildingToAdd), 1);
+            region.buildings.remove(buildingToAdd);
         });
 
         buildingToAdd.x = x;
@@ -59,21 +61,9 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
             width: 32,
             height: 32
         });
-        // buildingToAdd.hasChanged();
-
-        // const oldX = buildingToAdd.x, oldY = buildingToAdd.y;
-        // const oldRegionI = Math.floor(buildingToAdd.x / that.scale), oldRegionJ = Math.floor(buildingToAdd.y / that.scale);
-        // // console.log("oldRegionI = " + oldRegionI + ", oldRegionJ = " + oldRegionJ);
-        // const oldRegionBuildings = that.regionGrid.getElement(oldRegionI, oldRegionJ).buildings;
-        // oldRegionBuildings.splice(oldRegionBuildings.indexOf(buildingToAdd), 1);
-
-        // buildingToAdd.x = x;
-        // buildingToAdd.y = y;
-        // const newRegionI = Math.floor(buildingToAdd.x / that.scale), newRegionJ = Math.floor(buildingToAdd.y / that.scale);
-        // if(newRegionI < 35 && newRegionJ < 35){
-        //     // console.log("newRegionI = " + newRegionI + ", newRegionJ = " + newRegionJ);
-        //     buildingToAdd.hasChanged = that.regionGrid.getElement(newRegionI, newRegionJ).getHasChanged();
-        // }
+        buildingToAdd.regionsOccupied.forEach(function(region){
+            region.buildings.push(buildingToAdd);
+        });
     };
 
     this.buildings.push(buildingToAdd);
@@ -90,17 +80,25 @@ AntColony.Board.prototype.update = function(){
 };
 
 AntColony.Board.prototype.draw = function(params){
-    const time1 = (new Date()).getTime();
     // AntColony.validateParams(params, "context", "timestamp");
+    
+    // const time1 = window.performance.now();
+        // (new Date()).getTime();
+    // let tileDrawn = 0;
+
     // Advance frames
     this.buildings.forEach(function(building){
         building.advanceFrame(params);
     });
 
+    this.tiles.forEach(function(tile){
+        if(tile.isChanged){
+            // ++tileDrawn;
+            tile.draw(params);
+        }
+    });
 
-
-
-    this.drawTiles(params.context);
+    // this.drawTiles(params.context);
 
     this.buildings.forEach(function(building){
         if(building.isChanged){
@@ -109,13 +107,15 @@ AntColony.Board.prototype.draw = function(params){
     });
 
     this.items.forEach(function(item){
-        this.item.draw(params.context);
+        this.item.draw(params);
     });
 
+    // Make isChanged = false for all entities.
     this.resetRegions();
 
-    const time2 = (new Date()).getTime();
-    // console.log("Draw took " + (time2 - time1) + " milliseconds.");
+    // const time2 = window.performance.now();
+        // (new Date()).getTime();
+    // console.log("Draw took " + (time2    - time1) * 1000 + " microseconds. Tiles drawn: " + tileDrawn);
 };
 
 AntColony.Board.prototype.resetRegions = function(){
@@ -126,30 +126,10 @@ AntColony.Board.prototype.resetRegions = function(){
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*
+* Returns an Optional of a Region that contains the x, y coordinates.
+* The Optional.isPresent() === false iff the x, y coordinate is outside of the canvas.
+*/
 AntColony.Board.prototype.getRegionForCoordinate = function(x, y){
     const rect = this.canvas.getBoundingClientRect();
     const i = Math.floor(x / this.scale),
@@ -160,80 +140,21 @@ AntColony.Board.prototype.getRegionForCoordinate = function(x, y){
     return new AntColony.Optional(this.regionGrid.getElement(i, j));
 };
 
-
-
+/*
+* Returns an array containing all Regions touched by the params bounding box (params.x/y/width/height)
+* This method may return regions which are slightly outside of the params bounding box.
+*/
 AntColony.Board.prototype.getRegionsForBox = function(params){
     // TODO: remove validateParams
     // AntColony.validateParams(params, "x", "y", "width", "height")
     const regions = [];
-
-    for(let i = 0; i < params.width; i += this.scale - 1){
-        for(let j = 0; j < params.height; j += this.scale - 1){
+    for(let i = -1; i <= params.width + this.scale; i += this.scale){
+        for(let j = -1; j <= params.height + this.scale; j += this.scale){
             const optionalRegion = this.getRegionForCoordinate(params.x + i, params.y + j);
             if(optionalRegion.isPresent()){
                 regions.push(optionalRegion.getValue());
             }
         }
     }
-
-    // console.log("For x = " + params.x + ", y = " + params.y);
-    // console.log(regions);
     return regions;
-};
-
-AntColony.Board.prototype.drawTiles = function(context){
-
-    const that = this;
-    // TODO: Use a terrainType -> asset mapping
-    this.tiles.forEach(function(tile){
-        // validateParams(params, "currentElement", "i", "j");
-        // console.log(params.currentElement);
-        if(tile.isChanged){
-            const x = that.scale * tile.x;
-            const sx = 32 * tile.terrainType,
-                sy = 832,
-                swidth = 32,
-                sheight = 32,
-                y = that.scale * tile.y,
-                width = that.scale,
-                height = that.scale;
-                context.drawImage(
-                    AntColony.assetManager.getAsset("./assets/Tiles.png"),
-                    sx,
-                    sy,
-                    swidth,
-                    sheight,
-                    x,
-                    y,
-                    width,
-                    height
-                    );
-        }
-    });
-
-
-    // // TODO: Make this draw tiles actually corresponding to tileGrid[i][j]. Also optimize away calculations.
-    // for(let i = 0; i < this.width; ++i){
-    //     let x = this.scale * i;
-    //     for(let j = 0; j < this.height; ++j){
-    //         let sx = 32 * (this.tileGrid[i][j] - 1),
-    //         sy = 832,
-    //         swidth = 32,
-    //         sheight = 32,
-    //         y = this.scale * j,
-    //         width = this.scale,
-    //         height = this.scale;
-    //         context.drawImage(
-    //             AntColony.assetManager.getAsset("./assets/Tiles.png"),
-    //             sx,
-    //             sy,
-    //             swidth,
-    //             sheight,
-    //             x,
-    //             y,
-    //             width,
-    //             height
-    //             );
-    //     }
-    // }
 };
