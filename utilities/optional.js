@@ -2,19 +2,23 @@
 // Global namespace AntColony
 var AntColony = AntColony || {};
 
-AntColony.Optional = function(val){
-    if(val === undefined){
+AntColony.Optional = function(value){
+    if(value === undefined){
         throw new Error("Attempted to create an Optional object out of an undefined variable.");
     }
-    if(val === null){
+    if(value === null){
         return AntColony.Optional.Empty;
     }
-    this.value = val;
-    this.isPresent = true;
+    this.getValue = function(){
+        return value;
+    };
+    this.isPresent = function(){
+        return true;
+    };
     Object.freeze(this);
 };
 
-AntColony.Optional.Empty = {isPresent: false};
+AntColony.Optional.Empty = {isPresent: function(){return false}};
 Object.freeze(AntColony.Optional.Empty);
 
 // // Some tests:

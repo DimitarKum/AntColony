@@ -3,12 +3,30 @@
 <head>
     <meta charset="utf-8">
     <title>Ant Colony</title>
+
+    <!-- Utilities: -->
     <script type="text/javascript" src="./utilities/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="./utilities/validation.js"></script>
+    <script type="text/javascript" src="./utilities/optional.js"></script>
+    <script type="text/javascript" src="./utilities/grid.js"></script>
+    <script type="text/javascript" src="./utilities/randomization.js"></script>
+
+    <!--Model:  -->
+    <script type="text/javascript" src="./model/engine.js"></script>
+    <script type="text/javascript" src="./model/board.js"></script>
+    <script type="text/javascript" src="./model/region.js"></script>
+    <script type="text/javascript" src="./model/terrain.js"></script>
     <script type="text/javascript" src="./assetmanager.js"></script>
+
+    <!-- View: -->
+    <script type="text/javascript" src="./view/frameRefresher.js"></script>
+
+    <!-- Main: -->
     <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
-    <canvas id="gameWorld" width="800" height="800" style="border: 1px solid white; background: black"></canvas>
+    <canvas id="gameWorld" width="800" height="800" style="
+    /*cursor: none;*/
+    border: 10px solid darkgray; background: black"></canvas>
 </body>
 </html>
