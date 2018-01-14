@@ -21,20 +21,29 @@ AntColony.Engine = function(params){
 
 AntColony.Engine.prototype.start = function(){
     const that = this;
+    // let draws = 0;
+    // let timeDif = 0
+    // let maxTime = 0;
     function step(timestamp){
-        // console.log(timestamp);
+        // ++draws;
+        // const time1 = window.performance.now();
         that.board.update();
         that.board.draw({context: that.context, timestamp: timestamp});
         window.requestAnimationFrame(function(timestamp){
             step(timestamp);
         });
+        // const time2 = window.performance.now();
+        // timeDif += time2 - time1;
+        // if(timeDif > maxTime){
+        //     maxTime = timeDif;
+        // }
+        // if(draws % 60 === 0){
+        //     console.log("Update/Draw took on avg: " + ((timeDif) / 60) + " ms, with max: " + maxTime);
+        //     timeDif = 0;
+        //     maxTime = 0;
+        // }
     };
     window.requestAnimationFrame(function(timestamp){
         step(timestamp);
     });
 };
-
-// // Figures out which tiles
-// AntColony.Engine.prototype.addChangedRegion = function(params){
-//     AntColony.validateParams(params, "x", "y", "width", "height")
-// };

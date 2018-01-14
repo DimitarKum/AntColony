@@ -30,7 +30,7 @@ AntColony.Animation = function (params) {
 
 AntColony.Animation.prototype.advanceFrame = function(params){
     // AntColony.validateParams(params, "context", "timestamp");
-    // TODO: Use frame refresher to manage advancing the frame.
+    // TODO: Use frame refresher to manage advancing the frame. Also setChanged iff this.getCamera().isOnScreen(this);
 };
 
 AntColony.Animation.prototype.draw = function(params){
@@ -40,8 +40,8 @@ AntColony.Animation.prototype.draw = function(params){
         this.startY,
         this.frameWidth,
         this.frameHeight,
-        this.entity.x,
-        this.entity.y,
+        this.entity.x - this.getCamera().x,
+        this.entity.y - this.getCamera().y,
         this.entity.width,
         this.entity.height
         );

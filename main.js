@@ -23,11 +23,30 @@ AntColony.init = function(assetManager){
     const canvas = $("#gameWorld")[0];
     const ctx = canvas.getContext("2d");
 
+    const gridWidth = 128, gridHeight = 128, scale = 22,
+        viewingWidth = 32 * scale, viewingHeight = 32 * scale;
+
+    canvas.width = viewingWidth;
+    canvas.height = viewingHeight;
+
+    const camera = new AntColony.Camera({
+        viewingWidth: viewingWidth,
+        viewingHeight: viewingHeight,
+        gridWidth: gridWidth,
+        gridHeight: gridHeight,
+        scale: scale
+    });
+
+    AntColony.Animation.prototype.getCamera = function(){
+        return camera;
+    };
+
     const board = new AntColony.Board({
-        width: 36,
-        height: 36,
-        scale: 32,
-        canvas: canvas
+        width: gridWidth,
+        height: gridHeight,
+        scale: scale,
+        camera: camera
+        // canvas: canvas
     });
 
     const engine = new AntColony.Engine({
@@ -38,34 +57,35 @@ AntColony.init = function(assetManager){
         frameRate: 28
     });
 
-    const t = new leTower();
+    const t = new leTower(scale * 2);
     canvas.addEventListener("mousemove", function (e) {
-        //console.log(getXandY(e));
         let pos = getMousePos(canvas, e);
-        t.changePosition(pos.x - 24, pos.y - 24);
-        // t.x = pos.x;
-        // t.y = pos.y;
-        // board.specialDraw(ctx);
-        // ctx.drawImage(AntColony.assetManager.getAsset("./assets/" + t.curFrame + ".png"), t.x - 75, t.y - 75);
-        // let curFrame = 1;
-        // ctx.drawImage(AntColony.assetManager.getAsset("./assets/" + curFrame + ".png"), pos.x, pos.y);
+        t.changePosition(pos.x - scale / 2, pos.y - scale / 2);
     }, false);
     board.addBuilding(t);
 
     engine.start();
+
+    (new AntColony.Controller({
+        board: board,
+        camera: camera,
+        scale: scale
+    })).start();
+    
 };
 
 function getMousePos(canvas, evt) {
     const rect = canvas.getBoundingClientRect();
+    const borderWidth = 10, borderHeight = 10;
     return {
-      x: evt.clientX - rect.left,
-      y: evt.clientY - rect.top
+      x: evt.clientX - rect.left - borderWidth,
+      y: evt.clientY - rect.top - borderHeight
     };
 };
 
 
 // Temporary object showcasing animation.
-function leTower(){
+function leTower(scale){
     this.curFrame = 1;
 
     this.x = 0;
@@ -87,7 +107,13 @@ function leTower(){
     };
 
     this.draw = function(params){
-        params.context.drawImage(AntColony.assetManager.getAsset("./assets/" + this.frameRefresher.getFrame() + ".png"), this.x, this.y, 32, 32);
+        params.context.drawImage(
+            AntColony.assetManager.getAsset("./assets/" + this.frameRefresher.getFrame() + ".png"),
+            this.x,
+            this.y,
+            scale,
+            scale
+            );
     };
 
     // this.drawSame = function(ctx){

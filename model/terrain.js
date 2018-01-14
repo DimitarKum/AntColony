@@ -30,13 +30,6 @@ AntColony.Tile = function(params){
     };
 };
 
-
-
-
-
-
-
-
 /*
 * params.width - represents number of cells width-wise
 * params.height - represents number of cells height-wise

@@ -3,7 +3,8 @@
 var AntColony = AntColony || {};
 
 AntColony.Board = function(params){
-    AntColony.validateParams(params, "width", "height", "scale", "canvas");
+    AntColony.validateParams(params, "width", "height", "scale", "camera");
+        // "canvas");
     this.width = params.width;  
     this.height = params.height;
     this.scale = params.scale;
@@ -13,11 +14,11 @@ AntColony.Board = function(params){
         rows: this.height,
         scale: this.scale
     });
+    this.camera = params.camera;
     this.init();
-
-    this.canvas = params.canvas;
-    params.canvas.width = params.width * params.scale;
-    params.canvas.height = params.height * params.scale;
+    // this.canvas = params.canvas;
+    // params.canvas.width = params.width * params.scale / 2;
+    // params.canvas.height = params.height * params.scale / 2;
 
     this.trails = [];
     this.buildings = [];
@@ -30,7 +31,7 @@ AntColony.Board.prototype.init = function(){
         that.regionGrid.setElement({
             i: tile.gridX,
             j: tile.gridY,
-            value: new AntColony.Region({tile: tile})
+            value: new AntColony.Region({tile: tile, scale: that.scale, camera: that.camera})
         });
     });
 };
@@ -81,24 +82,19 @@ AntColony.Board.prototype.update = function(){
 
 AntColony.Board.prototype.draw = function(params){
     // AntColony.validateParams(params, "context", "timestamp");
-    
-    // const time1 = window.performance.now();
-        // (new Date()).getTime();
-    // let tileDrawn = 0;
 
     // Advance frames
     this.buildings.forEach(function(building){
         building.advanceFrame(params);
     });
 
+    // Draw 1) Tiles, 2) Buildings, 3) Items
     this.tiles.forEach(function(tile){
         if(tile.isChanged){
             // ++tileDrawn;
             tile.draw(params);
         }
     });
-
-    // this.drawTiles(params.context);
 
     this.buildings.forEach(function(building){
         if(building.isChanged){
@@ -122,16 +118,25 @@ AntColony.Board.prototype.resetRegions = function(){
     this.regionGrid.forEach(function(params){
         params.currentElement.setUnchanged();
     });
-    // TODO: .resetChanged each region.
 };
 
+AntColony.Board.prototype.setAllRegionsChanged = function(){
+    // TODO: Only 
+    // const that = this;
+    this.regionGrid.forEach(function(params){
+        const region = params.currentElement;
+        // if(that.camera.isOnScreen(region)){
+        region.setChanged();
+        // }
+    });
+};
 
 /*
 * Returns an Optional of a Region that contains the x, y coordinates.
 * The Optional.isPresent() === false iff the x, y coordinate is outside of the canvas.
 */
 AntColony.Board.prototype.getRegionForCoordinate = function(x, y){
-    const rect = this.canvas.getBoundingClientRect();
+    // const rect = this.canvas.getBoundingClientRect();
     const i = Math.floor(x / this.scale),
         j = Math.floor(y / this.scale);
     if(i < 0 || j < 0 || i >= this.width || j >= this.height){
@@ -150,7 +155,7 @@ AntColony.Board.prototype.getRegionsForBox = function(params){
     const regions = [];
     for(let i = -1; i <= params.width + this.scale; i += this.scale){
         for(let j = -1; j <= params.height + this.scale; j += this.scale){
-            const optionalRegion = this.getRegionForCoordinate(params.x + i, params.y + j);
+            const optionalRegion = this.getRegionForCoordinate(params.x + i + this.camera.x, params.y + j + this.camera.y);
             if(optionalRegion.isPresent()){
                 regions.push(optionalRegion.getValue());
             }
