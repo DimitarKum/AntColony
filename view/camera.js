@@ -18,6 +18,6 @@ AntColony.Camera = function(params){
 
 // entity is expected to have .x, .y, .width, .height
 AntColony.Camera.prototype.isOnScreen = function(entity){
-    return entity.x <= this.x + this.viewingWidth && entity.x >= this.x &&
-        entity.y <= this.y + this.viewingHeight && entity.y >= this.y;
+    return entity.x < this.x + this.viewingWidth && entity.x + entity.width > this.x &&
+        entity.y < this.y + this.viewingHeight && entity.y + entity.height > this.y;
 };

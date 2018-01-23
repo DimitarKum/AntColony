@@ -40,6 +40,7 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
     // TODO: Add hasChanged and changePosition to the building
     buildingToAdd.isChanged = true;
     buildingToAdd.regionsOccupied = [];
+    const camera = this.camera;
     buildingToAdd.hasChanged = function(){
         buildingToAdd.regionsOccupied.forEach(function(region){
             region.setChanged();
@@ -49,7 +50,6 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
     const that = this;
     buildingToAdd.changePosition = function(x, y){
         buildingToAdd.hasChanged();
-
         buildingToAdd.regionsOccupied.forEach(function(region){
             region.buildings.remove(buildingToAdd);
         });
@@ -65,6 +65,8 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
         buildingToAdd.regionsOccupied.forEach(function(region){
             region.buildings.push(buildingToAdd);
         });
+        buildingToAdd.isChanged = false;
+        buildingToAdd.hasChanged();
     };
 
     this.buildings.push(buildingToAdd);
@@ -82,7 +84,7 @@ AntColony.Board.prototype.update = function(){
 
 AntColony.Board.prototype.draw = function(params){
     // AntColony.validateParams(params, "context", "timestamp");
-
+    // console.log("FPS.");
     // Advance frames
     this.buildings.forEach(function(building){
         building.advanceFrame(params);
@@ -96,7 +98,9 @@ AntColony.Board.prototype.draw = function(params){
         }
     });
 
+    const camera = this.camera;
     this.buildings.forEach(function(building){
+        // TODO: Find out why camera.isOnScreen(building) returns false here
         if(building.isChanged){
             building.draw(params);
         }
@@ -122,12 +126,12 @@ AntColony.Board.prototype.resetRegions = function(){
 
 AntColony.Board.prototype.setAllRegionsChanged = function(){
     // TODO: Only 
-    // const that = this;
+    const that = this;
     this.regionGrid.forEach(function(params){
         const region = params.currentElement;
-        // if(that.camera.isOnScreen(region)){
-        region.setChanged();
-        // }
+        if(that.camera.isOnScreen(region)){
+            region.setChanged();
+        }
     });
 };
 
@@ -155,7 +159,11 @@ AntColony.Board.prototype.getRegionsForBox = function(params){
     const regions = [];
     for(let i = -1; i <= params.width + this.scale; i += this.scale){
         for(let j = -1; j <= params.height + this.scale; j += this.scale){
-            const optionalRegion = this.getRegionForCoordinate(params.x + i + this.camera.x, params.y + j + this.camera.y);
+            const optionalRegion = this.getRegionForCoordinate(params.x + i
+                // - this.camera.x
+                , params.y + j
+                 // - this.camera.y
+                 );
             if(optionalRegion.isPresent()){
                 regions.push(optionalRegion.getValue());
             }

@@ -7,16 +7,11 @@ var AntColony = AntColony || {};
 * frameRate - frames per second
 */
 AntColony.Engine = function(params){
-    AntColony.validateParams(params, "canvas", "context", "board", "gameSpeed", "frameRate");
+    AntColony.validateParams(params, "canvas", "context", "board", "gameSpeed", "frameRate", "userInterface");
     this.canvas = params.canvas;
     this.context = params.context;
-    // this.gameSpeed = params.gameSpeed;
-    // this.frameRate = params.frameRate;
-    // this.gameTime = 0;
-    // this.updateDrawInterval = Math.floor(1000 / this.frameRate) + 1;
-    // console.log("Frame rate is: " + this.frameRate + ", interval = " + this.updateDrawInterval);
-
     this.board = params.board;
+    this.userInterface = params.userInterface;
 };
 
 AntColony.Engine.prototype.start = function(){
@@ -27,8 +22,12 @@ AntColony.Engine.prototype.start = function(){
     function step(timestamp){
         // ++draws;
         // const time1 = window.performance.now();
-        that.board.update();
+        that.userInterface.update({timestamp: timestamp});
+        that.userInterface.draw({context: that.context, timestamp: timestamp});
+        that.board.update({timestamp: timestamp});
         that.board.draw({context: that.context, timestamp: timestamp});
+
+
         window.requestAnimationFrame(function(timestamp){
             step(timestamp);
         });

@@ -5,6 +5,10 @@ var AntColony = AntColony || {};
 AntColony.Controller = function(params) {
     AntColony.validateParams(params, "board", "camera", "scale");
 
+    this.keyDownMap = {};
+    this.keyUpMap = {};
+    this.keyPressedMap = {};
+
     this.board = params.board;
     this.camera = params.camera;
     this.scale = params.scale;
@@ -19,6 +23,45 @@ AntColony.Controller = function(params) {
     this.isMovingUp = false;
     this.isMovingDown = false;
 };
+
+// eventType = keydown/keyup/keypressed
+AntColony.Controller.prototype.registerKey = function(params){
+    AntColony.validateParams(params, "key", "eventType", "eventHandler");
+
+    switch(params.eventType){
+        case "keydown":
+            keyDownMap[params.key] = params.eventHandler;
+            $(document).off("keydown");
+            $(document).on("keydown", function(event){
+                params.eventHandler(event);
+            });
+            break;
+        case "keyp":
+            keyUpMap[params.key] = params.eventHandler;
+            $(document).off("keyp");
+            $(document).on("keyp", function(event){
+                params.eventHandler(event);
+            });
+            break;
+        case "keypressed":
+            keyPressedMap[params.key] = params.eventHandler;
+            $(document).off("keypressed");
+            $(document).on("keypressed", function(event){
+                params.eventHandler(event);
+            });
+            break;
+        default:
+            console.log("Attempted to register key[" + params.key + "] for unknown event type [" + params.eventType + "].");
+            break;    
+    }
+};
+
+AntColony.ScreenMoveController = function(){
+    
+};
+
+
+
 
 AntColony.Controller.prototype.start = function(){
     const LEFT = 37, RIGHT = 39, UP = 38, DOWN = 40;

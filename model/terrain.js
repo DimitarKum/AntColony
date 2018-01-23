@@ -21,6 +21,7 @@ AntColony.Tile = function(params){
         frameStartY: 832,
         frameWidth: 32,
         frameHeight: 32,
+        sheetWidth: params.scale,
         frameCount: 1,
         framesPerSecond: 0
     });
@@ -96,7 +97,7 @@ AntColony.startAnIsle = function(params){
                     params.terrainType){ //Adjescent terrain already has same type
                     nextOdds = params.odds * 0.1;
                 }else{
-                    nextOdds = params.odds * 0.81;
+                    nextOdds = params.odds * 0.825;
                 }
 
                 AntColony.startAnIsle({

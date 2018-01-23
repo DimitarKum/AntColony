@@ -18,7 +18,10 @@ AntColony.Region = function(params){
 };
 
 AntColony.Region.prototype.setChanged = function(){
-    if(!this.isChanged && this.camera.isOnScreen(this)){
+    if(
+        // !this.isChanged && 
+        this.camera.isOnScreen(this)
+        ){
         this.isChanged = true;
         this.forEachEntity(function(entity){
             entity.isChanged = true;
@@ -28,12 +31,12 @@ AntColony.Region.prototype.setChanged = function(){
 
 
 AntColony.Region.prototype.setUnchanged = function(){
-    if(this.isChanged){
+    // if(this.isChanged){
         this.isChanged = false;
         this.forEachEntity(function(entity){
             entity.isChanged = false;
         });
-    }
+    // }
 };
 
 AntColony.Region.prototype.forEachEntity = function(callback){

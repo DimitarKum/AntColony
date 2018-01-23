@@ -6,8 +6,8 @@ AntColony.Animation = function (params) {
     AntColony.validateParams(
         params, "entity", "spriteSheet",
         "frameStartX", "frameStartY",
-        "frameWidth", "frameHeight",
-        "frameCount", "framesPerSecond"
+        "frameWidth", "frameHeight", "sheetWidth",
+        "framesPerSecond","frameCount"
         );
 
     this.entity = params.entity;
@@ -16,33 +16,34 @@ AntColony.Animation = function (params) {
     this.startY = params.frameStartY;
     this.frameWidth = params.frameWidth;
     this.frameHeight = params.frameHeight;
-    // console.log(this.entity);
+    if(params.frameCount <= 1){
+        this.sheetWidth = 10000000;
+    }else{
+        this.sheetWidth = params.sheetWidth;
+    }
 
-
-    // TODO: Use frame refresher to manage advancing the frame.
-    this.getFrame = function(){
-        return 0;
-    };
-    // this.frameCount = params.frameCount;
-    // this.framesPerSecond = params.framesPerSecond
-    // this.currentFrame = 0;
-};
-
-AntColony.Animation.prototype.advanceFrame = function(params){
-    // AntColony.validateParams(params, "context", "timestamp");
-    // TODO: Use frame refresher to manage advancing the frame. Also setChanged iff this.getCamera().isOnScreen(this);
+    AntColony.validateParams(params, "frameCount", "framesPerSecond");
+    const frameRefresher = new AntColony.FrameRefresher({
+        frameCount: params.frameCount,
+        framesPerSecond: params.framesPerSecond
+    });
+    this.getFrame = function(){return frameRefresher.getFrame();};
+    this.advanceFrame = function(params){return frameRefresher.advanceFrame(params);};
 };
 
 AntColony.Animation.prototype.draw = function(params){
+    let frameXScale = 1;
+    const that = this;
     params.context.drawImage(
-        AntColony.assetManager.getAsset(this.spriteSheet),
-        this.startX + this.getFrame() * this.frameWidth,
-        this.startY,
-        this.frameWidth,
-        this.frameHeight,
-        this.entity.x - this.getCamera().x,
-        this.entity.y - this.getCamera().y,
-        this.entity.width,
-        this.entity.height
+        AntColony.assetManager.getAsset(that.spriteSheet),
+        // TODO: Reuse that.startX + that.getFrame() * that.frameWidth calculation!
+        (that.startX + that.getFrame() * that.frameWidth) % that.sheetWidth,
+        that.startY + this.frameHeight * Math.floor((that.startX + that.getFrame() * that.frameWidth) / that.sheetWidth),
+        Math.floor(that.frameWidth * frameXScale),
+        that.frameHeight,
+        that.entity.x - that.getCamera().x,
+        that.entity.y - that.getCamera().y,
+        that.entity.width,
+        that.entity.height
         );
 };

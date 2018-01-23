@@ -1,0 +1,23 @@
+#gameWorld{
+    /*cursor:        none;*/
+    border-top:    10px solid darkgray;
+    border-left:   10px solid darkgray; 
+    background:    black;
+    vertical-align: bottom
+}
+
+#interfaceCanvasSide{
+    /*cursor:        none;*/
+    border-top:     10px solid darkgray;
+    border-right:   10px solid darkgray; 
+    background:     black;
+    vertical-align: bottom
+}
+
+#interfaceCanvasBottom{
+    /*cursor:        none;*/
+    border-left:   10px solid darkgray; 
+    border-right:   10px solid darkgray; 
+    border-bottom:  10px solid darkgray;
+    background:     black
+}
