@@ -2,11 +2,8 @@
 // Global namespace AntColony
 var AntColony = AntColony || {};
 
-// Tiles
-AntColony.Tiles = function(){
-
-}
-
-// Buildings
-
-// Items
+AntColony.Buildings = {
+    NO_BUILDING: -1,
+    AntMound: 0
+    // ...
+};

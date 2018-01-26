@@ -29,21 +29,23 @@ AntColony.Animation = function (params) {
     });
     this.getFrame = function(){return frameRefresher.getFrame();};
     this.advanceFrame = function(params){return frameRefresher.advanceFrame(params);};
+
+    // TODO: Delete this
+    this.specialFlag = false;
 };
 
 AntColony.Animation.prototype.draw = function(params){
-    let frameXScale = 1;
     const that = this;
     params.context.drawImage(
         AntColony.assetManager.getAsset(that.spriteSheet),
         // TODO: Reuse that.startX + that.getFrame() * that.frameWidth calculation!
         (that.startX + that.getFrame() * that.frameWidth) % that.sheetWidth,
         that.startY + this.frameHeight * Math.floor((that.startX + that.getFrame() * that.frameWidth) / that.sheetWidth),
-        Math.floor(that.frameWidth * frameXScale),
+        that.frameWidth,
         that.frameHeight,
         that.entity.x - that.getCamera().x,
         that.entity.y - that.getCamera().y,
         that.entity.width,
         that.entity.height
-        );
+    );
 };

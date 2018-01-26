@@ -15,7 +15,10 @@
     <!--Model:  -->
     <script type="text/javascript" src="./model/engine.js"></script>
     <script type="text/javascript" src="./model/board.js"></script>
+    <script type="text/javascript" src="./model/player.js"></script>
     <script type="text/javascript" src="./model/terrain.js"></script>
+    <script type="text/javascript" src="./model/buildings/buildings.js"></script>
+    <script type="text/javascript" src="./model/buildings/AntMound.js"></script>
     <script type="text/javascript" src="./assetmanager.js"></script>
 
     <!-- View: -->
@@ -23,20 +26,25 @@
     <script type="text/javascript" src="./view/region.js"></script>
     <script type="text/javascript" src="./view/animation.js"></script>
     <script type="text/javascript" src="./view/frameRefresher.js"></script>
+    <script type="text/javascript" src="./view/userInterface/buildingMenuItem.js"></script>
     <script type="text/javascript" src="./view/userInterface/buildingPanel.js"></script>
+    <script type="text/javascript" src="./view/userInterface/antMoundMenuItem.js"></script>
+    <script type="text/javascript" src="./view/buildings/antMoundShadow.js"></script>
 
     <!-- Controller: -->
     <script type="text/javascript" src="./controller/controlMapper.js"></script>
     <script type="text/javascript" src="./controller/screenMoveController.js"></script>
+    <script type="text/javascript" src="./controller/playerBoardController.js"></script>
+    <script type="text/javascript" src="./controller/mouseSpaceBinder.js"></script>
 
     <!-- Main: -->
     <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
     <link rel="stylesheet" href="css/styles.css">
-    <canvas id="gameWorld" width="800" height="800"></canvas><!-- 
-     --><canvas id="interfaceCanvasSide" width="100" height="100"></canvas><!-- 
-     --></br><!-- 
+    <canvas id="gameWorld" width="800" height="800"></canvas><!--Removes space between canvases
+     --><canvas id="interfaceCanvasSide" width="100" height="100"></canvas><!-- Removes space between canvases
+     --></br><!-- Removes space between canvases
      --><canvas id="interfaceCanvasBottom" width="800" height="100"></canvas>
 </body>
 </html>

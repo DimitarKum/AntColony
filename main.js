@@ -4,7 +4,6 @@ var AntColony = AntColony || {};
 
 
 // fork in a branch called gh-pagess
-
 $('document').ready(function(){
     AntColony.assetManager = new AssetManager();
     // const assetManager = new AssetManager();
@@ -18,10 +17,11 @@ $('document').ready(function(){
 AntColony.queueAllAssets = function(){
     AntColony.assetManager.queueDownload("./assets/Tiles.png");
     AntColony.assetManager.queueDownload("./assets/MoundMovement.png");
+    AntColony.assetManager.queueDownload("./assets/MoundMovementTinted.png");
+    AntColony.assetManager.queueDownload("./assets/moundIcon.png");
 };
 
-AntColony.init = function(assetManager){
-
+AntColony.init = function(){
     const canvas = $("#gameWorld")[0];
     const ctx = canvas.getContext("2d");
 
@@ -31,16 +31,19 @@ AntColony.init = function(assetManager){
     canvas.width = viewingWidth ;
     canvas.height = viewingHeight;
 
-    
-
 
     const interfaceCanvasSide = $("#interfaceCanvasSide")[0];
     interfaceCanvasSide.width = 8 * scale;
     interfaceCanvasSide.height = viewingHeight;
 
+
     const interfaceCanvasBottom = $("#interfaceCanvasBottom")[0];
     interfaceCanvasBottom.width = viewingWidth + 8 * scale;
     interfaceCanvasBottom.height = 4 * scale;
+    // interfaceCanvasBottom.getContext("2d").font = "30px Comic Sans";
+    // interfaceCanvasBottom.getContext("2d").textAlign = "center";
+    // interfaceCanvasBottom.getContext("2d").fillStyle = "red";
+    // interfaceCanvasBottom.getContext("2d").strokeText("Interface Panel",0,0);
 
 
     const camera = new AntColony.Camera({
@@ -51,6 +54,8 @@ AntColony.init = function(assetManager){
         scale: scale
     });
 
+    AntColony.Camera.instance = camera;
+    // TODO: Refactor Animation to use .instance singleton instead of .getCamera()
     AntColony.Animation.prototype.getCamera = function(){
         return camera;
     };
@@ -63,20 +68,50 @@ AntColony.init = function(assetManager){
         // canvas: canvas
     });
 
-    const userInterface = new AntColony.BuildingPanel({});
+    const player = new AntColony.Player({
+        board: board
+    });
+    const mouseBinder = new AntColony.MouseSpaceBinder({canvas: interfaceCanvasSide});
+    const buildingPanel = new AntColony.BuildingPanel({
+        scale: scale,
+        canvas: interfaceCanvasSide,
+        mouseBinder: mouseBinder,
+        player: player
+    });
+    buildingPanel.init();
 
     const engine = new AntColony.Engine({
         canvas: canvas,
         context: ctx,
         board: board,
         gameSpeed: 1,
-        frameRate: 28,
-        userInterface: userInterface
+        frameRate: 28
+        // userInterface: userInterface
     });
 
-    const antMound = new AntMound(scale * 2, camera);
+    const antMound = new AntColony.AntMound({
+        scale: scale
+    });
     board.addBuilding(antMound);
-    antMound.changePosition(30 * scale, 10 * scale);
+    antMound.changePosition({
+        x: 30 * scale,
+        y: 10 * scale
+    });
+
+
+
+    const antMound2 = new AntColony.AntMound({
+        scale: scale
+    });
+    board.addBuilding(antMound2);
+    antMound2.changePosition({
+        x: 26 * scale,
+        y: 8 * scale
+    });
+
+
+
+
 
     engine.start();
 
@@ -89,38 +124,16 @@ AntColony.init = function(assetManager){
     });
 
     screenMoveController.registerKeys(controlMapper);
-};
 
-function AntMound(scale){
-    this.x = 0;
-    this.y = 0;
-    this.width = scale;
-    this.height = scale;
-
-    const animation = new AntColony.Animation({
-        entity: this,
-        spriteSheet: "./assets/MoundMovement.png",
-        frameStartX: 0,
-        frameStartY: 0,
-        frameWidth: 32,
-        frameHeight: 32,
-        sheetWidth: 32 * 6,
-        frameCount: 31,
-        framesPerSecond: 5,
-        isTower: true
+    const playerBoardController = new AntColony.PlayerBoardController({
+        board: board,
+        player: player,
+        canvas: canvas,
+        buildingPanel: buildingPanel
     });
 
-    this.draw = function(params){return animation.draw(params);};
-    this.advanceFrame = function(timestamp){
-        if(animation.advanceFrame(timestamp)){
-            this.hasChanged();
-        }
-    };
-    this.update = function(){};
+    playerBoardController.start();
 };
-
-
-
 
 
 
@@ -130,53 +143,5 @@ function getMousePos(canvas, evt) {
     return {
       x: evt.clientX - rect.left - borderWidth,
       y: evt.clientY - rect.top - borderHeight
-    };
-};
-
-
-// Temporary object showcasing animation.
-function leTower(scale, camera){
-    this.curFrame = 1;
-
-    this.x = 0;
-    this.y = 0;
-    this.width = scale;
-    this.height = scale;
-
-    // TODO: remove this boolean
-    this.isTower = true;
-
-    this.frameRefresher = new AntColony.FrameRefresher({
-        startFrame: 1,
-        endFrame: 29,
-        framesPerSecond: 24
-    });
-
-    this.advanceFrame = function(params){
-        // TODO: This should have to manually check the frame difference
-        // const before = this.frameRefresher.currentFrame;
-        // this.frameRefresher.updateTimestamp(params.timestamp);
-        // if(this.frameRefresher.currentFrame - before != 0){
-        //     this.hasChanged();
-        // }
-    };
-
-    const that = this;
-    this.draw = function(params){
-        params.context.drawImage(
-            AntColony.assetManager.getAsset("./assets/" + this.frameRefresher.getFrame() + ".png"),
-            this.x - camera.x,
-            this.y - camera.y,
-            scale,
-            scale
-            );
-    };
-
-    // this.drawSame = function(ctx){
-    //     ctx.drawImage(AntColony.assetManager.getAsset("./assets/" + this.curFrame + ".png"), this.x, this.y, 32, 32);
-    // }
-
-    this.update = function(){
-        ;
     };
 };

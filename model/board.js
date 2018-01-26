@@ -23,6 +23,8 @@ AntColony.Board = function(params){
     this.trails = [];
     this.buildings = [];
     this.items = [];
+
+    this.buildingShadow = {};
 };
 
 AntColony.Board.prototype.init = function(){
@@ -48,7 +50,9 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
     };
     
     const that = this;
-    buildingToAdd.changePosition = function(x, y){
+    buildingToAdd.changePosition = function(params){
+        // AntColony.validateParams(params, "x", "y");
+        const x = params.x, y = params.y;
         buildingToAdd.hasChanged();
         buildingToAdd.regionsOccupied.forEach(function(region){
             region.buildings.remove(buildingToAdd);
@@ -59,8 +63,8 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
         buildingToAdd.regionsOccupied = that.getRegionsForBox({
             x: buildingToAdd.x,
             y: buildingToAdd.y,
-            width: 32,
-            height: 32
+            width: that.scale,
+            height: that.scale
         });
         buildingToAdd.regionsOccupied.forEach(function(region){
             region.buildings.push(buildingToAdd);
@@ -70,7 +74,62 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
     };
 
     this.buildings.push(buildingToAdd);
-    buildingToAdd.changePosition(buildingToAdd.x, buildingToAdd.y);
+    buildingToAdd.changePosition({
+        x: buildingToAdd.x, 
+        y: buildingToAdd.y
+    });
+};
+
+// TODO: Refactored repeated code (almost same as addBuilding)
+AntColony.Board.prototype.setBuildingShadow = function(buildingShadow){
+    buildingShadow.isChanged = true;
+    buildingShadow.regionsOccupied = [];
+    const camera = this.camera;
+    buildingShadow.hasChanged = function(){
+        buildingShadow.regionsOccupied.forEach(function(region){
+            region.setChanged();
+        });
+    };
+    
+    const that = this;
+    buildingShadow.changePosition = function(params){
+        // AntColony.validateParams(params, "x", "y");
+        const x = params.x, y = params.y;
+        buildingShadow.hasChanged();
+        buildingShadow.regionsOccupied.forEach(function(region){
+            region.buildings.remove(buildingShadow);
+        });
+
+        buildingShadow.x = x;
+        buildingShadow.y = y;
+        buildingShadow.regionsOccupied = that.getRegionsForBox({
+            x: buildingShadow.x,
+            y: buildingShadow.y,
+            width: that.scale,
+            height: that.scale
+        });
+        buildingShadow.regionsOccupied.forEach(function(region){
+            region.buildings.push(buildingShadow);
+        });
+        buildingShadow.isChanged = false;
+        buildingShadow.hasChanged();
+    };
+
+    this.buildingShadow = buildingShadow;
+
+    buildingShadow.changePosition({
+        x: buildingShadow.x,
+        y: buildingShadow.y
+    });
+};
+
+AntColony.Board.prototype.removeBuildingShadow = function(){
+    this.buildingShadow.hasChanged();
+    this.buildingShadow = {};
+};
+
+AntColony.Board.prototype.getBuildingShadow = function(){
+    return this.buildingShadow;
 };
 
 AntColony.Board.prototype.update = function(){
@@ -89,6 +148,9 @@ AntColony.Board.prototype.draw = function(params){
     this.buildings.forEach(function(building){
         building.advanceFrame(params);
     });
+    if(this.buildingShadow.advanceFrame){
+        this.buildingShadow.advanceFrame(params);
+    }
 
     // Draw 1) Tiles, 2) Buildings, 3) Items
     this.tiles.forEach(function(tile){
@@ -98,7 +160,6 @@ AntColony.Board.prototype.draw = function(params){
         }
     });
 
-    const camera = this.camera;
     this.buildings.forEach(function(building){
         // TODO: Find out why camera.isOnScreen(building) returns false here
         if(building.isChanged){
@@ -109,6 +170,10 @@ AntColony.Board.prototype.draw = function(params){
     this.items.forEach(function(item){
         this.item.draw(params);
     });
+
+    if(this.buildingShadow.isChanged){
+        this.buildingShadow.draw(params);
+    }
 
     // Make isChanged = false for all entities.
     this.resetRegions();

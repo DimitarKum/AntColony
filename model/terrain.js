@@ -2,6 +2,14 @@
 // Global namespace AntColony
 var AntColony = AntColony || {};
 
+AntColony.Terrain = {
+    Earth: 1,
+    Grass: 2,
+    Water: 3,
+    Rock: 4,
+    Forest: 5
+};
+
 AntColony.Tile = function(params){
     AntColony.validateParams(params, "terrainType", "gridX", "gridY", "scale");
     this.terrainType = params.terrainType;
@@ -58,13 +66,6 @@ AntColony.getAdjescentCoords = function (params){
     return coords;
 };
 
-AntColony.Terrain = {
-    Earth: 1,
-    Grass: 2,
-    Water: 3,
-    Rock: 4,
-    Forest: 5
-};
 
 AntColony.randTerrain = function(){
     return AntColony.randInt({from: 1, to: 5});
