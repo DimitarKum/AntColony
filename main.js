@@ -139,8 +139,8 @@ AntColony.displayInformation = function(params){
         // ctx.save();
         // ctx.beginPath();
         context.font = params.scale + "px Times New Roman";
-        context.fillStyle = "white";
-        context.fillText("Use key arrows to move camera in the world.", params.scale, params.scale);
+        context.fillStyle = "#B0B000";
+        context.fillText("Use arrow key to move camera in the world.", params.scale, params.scale);
         context.fillText("You can build an AntMound or demolish an AntMound", params.scale, params.scale * 2);
         context.fillText("using the icons on the right side.", params.scale, params.scale * 3);
 

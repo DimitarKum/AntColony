@@ -27,8 +27,8 @@ AntColony.Camera.prototype.getMousePosition = function(params) {
     AntColony.validateParams(params, "canvas", "event")
     const rect = params.canvas.getBoundingClientRect();
     const computedStyle = window.getComputedStyle(params.canvas, null);
-    const x = event.clientX - rect.left - parseInt(computedStyle.getPropertyValue("border-left-width"), 10),
-        y = event.clientY - rect.top - parseInt(computedStyle.getPropertyValue("border-top-width"), 10);
+    const x = params.event.clientX - rect.left - parseInt(computedStyle.getPropertyValue("border-left-width"), 10),
+        y = params.event.clientY - rect.top - parseInt(computedStyle.getPropertyValue("border-top-width"), 10);
     return {
         x: x + this.x,
         y: y + this.y

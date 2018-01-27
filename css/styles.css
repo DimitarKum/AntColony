@@ -3,15 +3,16 @@
     border-top:     10px solid darkgray;
     border-left:    10px solid darkgray; 
     background:     black;
-    vertical-align: bottom
+    vertical-align: bottom;
 }
 
 #interfaceCanvasSide{
     /*cursor:        none;*/
     border-top:     10px solid darkgray;
-    border-right:   10px solid darkgray; 
-    background:     black;
-    vertical-align: bottom
+    border-right:   10px solid darkgray;
+    background: #050522;
+    /*background:     black;*/
+    vertical-align: bottom;
 }
 
 #interfaceCanvasBottom{
@@ -19,5 +20,6 @@
     border-left:    10px solid darkgray; 
     border-right:   10px solid darkgray; 
     border-bottom:  10px solid darkgray;
-    background:     black
+    background: #050522;
+    /*background:     black*/
 }
