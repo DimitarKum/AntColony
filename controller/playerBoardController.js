@@ -25,8 +25,8 @@ AntColony.PlayerBoardController.prototype.start = function() {
                     event: event
                 });
                 const optionalRegion = that.board.getRegionForCoordinate({
-                    x: mousePosition.x - 22,
-                    y: mousePosition.y - 22 
+                    x: mousePosition.x - that.scale,
+                    y: mousePosition.y - that.scale 
                 });
                 if(optionalRegion.isPresent()){
                     const region = optionalRegion.getValue();
@@ -79,8 +79,8 @@ AntColony.PlayerBoardController.prototype.start = function() {
                     event: event
                 });
                 const optionalRegion = that.board.getRegionForCoordinate({
-                    x: mousePosition.x - 22,
-                    y: mousePosition.y - 22 
+                    x: mousePosition.x,
+                    y: mousePosition.y 
                 });
                 if(optionalRegion.isPresent()){
                     const region = optionalRegion.getValue();

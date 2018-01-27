@@ -41,6 +41,12 @@ AntColony.init = function(){
     const interfaceCanvasBottom = $("#interfaceCanvasBottom")[0];
     interfaceCanvasBottom.width = viewingWidth + 8 * scale;
     interfaceCanvasBottom.height = 4 * scale;
+    AntColony.displayInformation({
+        context: interfaceCanvasBottom.getContext("2d"),//interfaceCanvasBottom.getContext("2d"),
+        scale: scale
+    });
+
+
     // interfaceCanvasBottom.getContext("2d").font = "30px Comic Sans";
     // interfaceCanvasBottom.getContext("2d").textAlign = "center";
     // interfaceCanvasBottom.getContext("2d").fillStyle = "red";
@@ -124,4 +130,27 @@ function getMousePos(canvas, evt) {
       x: evt.clientX - rect.left - borderWidth,
       y: evt.clientY - rect.top - borderHeight
     };
+};
+
+AntColony.displayInformation = function(params){
+    AntColony.validateParams(params, "context", "scale");
+
+    const drawText = function(context){
+        // ctx.save();
+        // ctx.beginPath();
+        context.font = params.scale + "px Times New Roman";
+        context.fillStyle = "white";
+        context.fillText("Use key arrows to move camera in the world.", params.scale, params.scale);
+        context.fillText("You can build an AntMound or demolish an AntMound", params.scale, params.scale * 2);
+        context.fillText("using the icons on the right side.", params.scale, params.scale * 3);
+
+        // ctx.closePath();
+        // ctx.restore();
+    };
+    window.requestAnimationFrame(function(timestamp){
+        drawText(params.context);
+    });
+    // window.setInterval(function(){
+    //     drawText(params.context);
+    // }, 5);
 };
