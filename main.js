@@ -19,6 +19,7 @@ AntColony.queueAllAssets = function(){
     AntColony.assetManager.queueDownload("./assets/MoundMovement.png");
     AntColony.assetManager.queueDownload("./assets/MoundMovementTinted.png");
     AntColony.assetManager.queueDownload("./assets/moundIcon.png");
+    AntColony.assetManager.queueDownload("./assets/redX.png");
 };
 
 AntColony.init = function(){
@@ -69,7 +70,8 @@ AntColony.init = function(){
     });
 
     const player = new AntColony.Player({
-        board: board
+        board: board,
+        gameWorld: canvas
     });
     const mouseBinder = new AntColony.MouseSpaceBinder({canvas: interfaceCanvasSide});
     const buildingPanel = new AntColony.BuildingPanel({
@@ -89,29 +91,6 @@ AntColony.init = function(){
         // userInterface: userInterface
     });
 
-    const antMound = new AntColony.AntMound({
-        scale: scale
-    });
-    board.addBuilding(antMound);
-    antMound.changePosition({
-        x: 30 * scale,
-        y: 10 * scale
-    });
-
-
-
-    const antMound2 = new AntColony.AntMound({
-        scale: scale
-    });
-    board.addBuilding(antMound2);
-    antMound2.changePosition({
-        x: 26 * scale,
-        y: 8 * scale
-    });
-
-
-
-
 
     engine.start();
 
@@ -129,7 +108,8 @@ AntColony.init = function(){
         board: board,
         player: player,
         canvas: canvas,
-        buildingPanel: buildingPanel
+        buildingPanel: buildingPanel,
+        scale: scale
     });
 
     playerBoardController.start();

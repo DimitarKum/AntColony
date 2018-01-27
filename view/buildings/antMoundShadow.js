@@ -9,6 +9,7 @@ AntColony.AntMoundShadow = function(params){
     this.y = 0;
     this.width = params.scale * 2;
     this.height = params.scale * 2;
+    this.isShadow = true;
 
     const animation = new AntColony.Animation({
         entity: this,

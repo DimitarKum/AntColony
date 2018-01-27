@@ -2,14 +2,13 @@
 // Global namespace AntColony
 var AntColony = AntColony || {};
 
-AntColony.AntMoundMenuItem = function(params){
+AntColony.DemolishMenuItem = function(params) {
     AntColony.validateParams(params, "scale");
 
     this.scale = params.scale;
-    this.buildingType = AntColony.BuildingTypes.AntMound;
 
-    const antMoundMenuItem = new AntColony.BuildingMenuItem({
-        icon: AntColony.assetManager.getAsset("./assets/moundIcon.png"),
+    const demolishMenuItem = new AntColony.BuildingMenuItem({
+        icon: AntColony.assetManager.getAsset("./assets/redX.png"),
         scale: params.scale
     });
 
@@ -17,7 +16,7 @@ AntColony.AntMoundMenuItem = function(params){
 
     this.drawIcon = function(params){
         // AntColony.validateParams(params, "context");
-        antMoundMenuItem.drawIcon({
+        demolishMenuItem.drawIcon({
             context: params.context,
             iconX: that.iconX,
             iconY: that.iconY,
@@ -25,17 +24,14 @@ AntColony.AntMoundMenuItem = function(params){
     };
 
     this.select = function(){
-        antMoundMenuItem.select();
+        demolishMenuItem.select();
     };
 
     this.deselect = function(){
-        antMoundMenuItem.deselect();
+        demolishMenuItem.deselect();
     };
 
     this.isSelected = function() {
-        return antMoundMenuItem.isSelected();
+        return demolishMenuItem.isSelected();
     }
 };
-
-
-

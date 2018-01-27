@@ -4,12 +4,13 @@ var AntColony = AntColony || {};
 
 // Used for selecting buildings
 AntColony.PlayerBoardController = function(params) {
-    AntColony.validateParams(params, "board", "player", "canvas", "buildingPanel");
+    AntColony.validateParams(params, "board", "player", "canvas", "buildingPanel", "scale");
 
     this.board = params.board;
     this.canvas = params.canvas;
     this.player = params.player;
     this.buildingPanel = params.buildingPanel;
+    this.scale = params.scale;
 };
 
 AntColony.PlayerBoardController.prototype.start = function() {
@@ -23,17 +24,17 @@ AntColony.PlayerBoardController.prototype.start = function() {
                     canvas: that.canvas,
                     event: event
                 });
-
-                const buildingShadow = that.board.getBuildingShadow();
-
-                buildingShadow.changePosition({
-                    x: mousePosition.x - Math.floor(buildingShadow.width / 2),
-                    y: mousePosition.y - Math.floor(buildingShadow.height / 2)
+                const optionalRegion = that.board.getRegionForCoordinate({
+                    x: mousePosition.x - 22,
+                    y: mousePosition.y - 22 
                 });
-                // that.board.getBuildingShadow().changePosition({
-                //     x: event.clientX + AntColony.Camera.instance.x,
-                //     y: event.clientY + AntColony.Camera.instance.y
-                // });
+                if(optionalRegion.isPresent()){
+                    const region = optionalRegion.getValue();
+                    that.board.getBuildingShadow().changePosition({
+                        x: region.x,
+                        y: region.y
+                    });
+                }
                 break;
             case AntColony.Player.State.DEMOLISH:
                 break;
@@ -48,9 +49,48 @@ AntColony.PlayerBoardController.prototype.start = function() {
             case AntColony.Player.State.SELECT:
                 break;
             case AntColony.Player.State.BUILD:
-                that.buildingPanel.deselectBuildings();
+                let buildingOverlaps = false;
+                const buildingShadow = that.board.getBuildingShadow();
+                buildingShadow.regionsOccupied.forEach(function(region){
+                    // TODO: Also check if all tiles are correct type for the building type.
+                    if(region.containsABuilding()){
+                        buildingOverlaps = true;
+                    }
+                });
+                
+                if(!buildingOverlaps){
+                    const buildingToAdd = AntColony.BuildingTypes.getBuildingForType({
+                        buildingType: that.player.getSelectedBuildingType(),
+                        scale: that.scale
+                    });
+                    that.board.addBuilding(buildingToAdd);
+                    buildingToAdd.changePosition({
+                        x: buildingShadow.x,
+                        y: buildingShadow.y
+                    });
+                }
+                
+                // that.buildingPanel.deselectBuildings();
                 break;
             case AntColony.Player.State.DEMOLISH:
+                console.log("demolish click");
+                const mousePosition = AntColony.Camera.instance.getMousePosition({
+                    canvas: that.canvas,
+                    event: event
+                });
+                const optionalRegion = that.board.getRegionForCoordinate({
+                    x: mousePosition.x - 22,
+                    y: mousePosition.y - 22 
+                });
+                if(optionalRegion.isPresent()){
+                    const region = optionalRegion.getValue();
+                    const optionalBuilding = region.getBuilding();
+                    if(optionalBuilding.isPresent()){
+                        that.board.removeBuilding({
+                            buildingToRemove: optionalBuilding.getValue()
+                        });
+                    }
+                }
                 break;
             default:
                 that.buildingPanel.deselectBuildings();

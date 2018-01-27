@@ -24,7 +24,7 @@ AntColony.Board = function(params){
     this.buildings = [];
     this.items = [];
 
-    this.buildingShadow = {};
+    this.buildingShadow = null;
 };
 
 AntColony.Board.prototype.init = function(){
@@ -80,6 +80,16 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
     });
 };
 
+AntColony.Board.prototype.removeBuilding = function(params){
+    AntColony.validateParams(params, "buildingToRemove");
+    params.buildingToRemove.changePosition({
+        x: -10 * this.scale,
+        y: -10 * this.scale
+    });
+    this.buildings.remove(params.buildingToRemove);
+
+};
+
 // TODO: Refactored repeated code (almost same as addBuilding)
 AntColony.Board.prototype.setBuildingShadow = function(buildingShadow){
     buildingShadow.isChanged = true;
@@ -124,8 +134,10 @@ AntColony.Board.prototype.setBuildingShadow = function(buildingShadow){
 };
 
 AntColony.Board.prototype.removeBuildingShadow = function(){
-    this.buildingShadow.hasChanged();
-    this.buildingShadow = {};
+    if(this.buildingShadow){
+        this.buildingShadow.hasChanged();
+        this.buildingShadow = null;
+    }
 };
 
 AntColony.Board.prototype.getBuildingShadow = function(){
@@ -148,17 +160,27 @@ AntColony.Board.prototype.draw = function(params){
     this.buildings.forEach(function(building){
         building.advanceFrame(params);
     });
-    if(this.buildingShadow.advanceFrame){
+    if(this.buildingShadow && this.buildingShadow.advanceFrame){
         this.buildingShadow.advanceFrame(params);
     }
 
     // Draw 1) Tiles, 2) Buildings, 3) Items
-    this.tiles.forEach(function(tile){
+    this.regionGrid.forEach(function(regionParams){
+        // AntColony.validateParams(params, "regionParams", "i", "j");
+        const tile = regionParams.currentElement.tile;
         if(tile.isChanged){
             // ++tileDrawn;
             tile.draw(params);
         }
     });
+
+
+    // this.tiles.forEach(function(tile){
+    //     if(tile.isChanged){
+    //         // ++tileDrawn;
+    //         tile.draw(params);
+    //     }
+    // });
 
     this.buildings.forEach(function(building){
         // TODO: Find out why camera.isOnScreen(building) returns false here
@@ -171,7 +193,7 @@ AntColony.Board.prototype.draw = function(params){
         this.item.draw(params);
     });
 
-    if(this.buildingShadow.isChanged){
+    if(this.buildingShadow && this.buildingShadow.isChanged){
         this.buildingShadow.draw(params);
     }
 
@@ -204,7 +226,9 @@ AntColony.Board.prototype.setAllRegionsChanged = function(){
 * Returns an Optional of a Region that contains the x, y coordinates.
 * The Optional.isPresent() === false iff the x, y coordinate is outside of the canvas.
 */
-AntColony.Board.prototype.getRegionForCoordinate = function(x, y){
+AntColony.Board.prototype.getRegionForCoordinate = function(params){
+    // AntColony.validateParams(params, "x", "y");
+    const x = params.x, y = params.y;
     // const rect = this.canvas.getBoundingClientRect();
     const i = Math.floor(x / this.scale),
         j = Math.floor(y / this.scale);
@@ -219,20 +243,30 @@ AntColony.Board.prototype.getRegionForCoordinate = function(x, y){
 * This method may return regions which are slightly outside of the params bounding box.
 */
 AntColony.Board.prototype.getRegionsForBox = function(params){
-    // TODO: remove validateParams
     // AntColony.validateParams(params, "x", "y", "width", "height")
     const regions = [];
-    for(let i = -1; i <= params.width + this.scale; i += this.scale){
-        for(let j = -1; j <= params.height + this.scale; j += this.scale){
-            const optionalRegion = this.getRegionForCoordinate(params.x + i
-                // - this.camera.x
-                , params.y + j
-                 // - this.camera.y
-                 );
+    // for(let i = -1; i <= params.width + this.scale; i += this.scale){
+    //     for(let j = -1; j <= params.height + this.scale; j += this.scale){
+    //         const optionalRegion = this.getRegionForCoordinate({
+    //             x: params.x + i,
+    //             y: params.y + j   
+    //         });
+    //         if(optionalRegion.isPresent()){
+    //             regions.push(optionalRegion.getValue());
+    //         }
+    //     }
+    // }
+    for(let i = 0; i <= params.width; i += this.scale){
+        for(let j = 0; j <= params.height; j += this.scale){
+            const optionalRegion = this.getRegionForCoordinate({
+                x: params.x + i,
+                y: params.y + j   
+            });
             if(optionalRegion.isPresent()){
                 regions.push(optionalRegion.getValue());
             }
         }
     }
+
     return regions;
 };

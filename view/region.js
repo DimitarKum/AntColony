@@ -17,6 +17,23 @@ AntColony.Region = function(params){
     this.isChanged = true;
 };
 
+AntColony.Region.prototype.containsABuilding = function(){
+    let containsABuilding = false;
+    this.buildings.forEach(function(building){
+        if(!building.isShadow){
+            containsABuilding = true;
+        }
+    });
+    return containsABuilding;
+};
+
+AntColony.Region.prototype.getBuilding = function(){
+    if(this.buildings.length > 0){
+        return new AntColony.Optional(this.buildings[0]);
+    }
+    return AntColony.Optional.Empty;
+};
+
 AntColony.Region.prototype.setChanged = function(){
     if(
         // !this.isChanged && 
