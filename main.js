@@ -20,6 +20,7 @@ AntColony.queueAllAssets = function(){
     AntColony.assetManager.queueDownload("./assets/MoundMovementTinted.png");
     AntColony.assetManager.queueDownload("./assets/moundIcon.png");
     AntColony.assetManager.queueDownload("./assets/redX.png");
+    AntColony.assetManager.queueDownload("./assets/ProjectUtumno_full.png");
 };
 
 AntColony.init = function(){

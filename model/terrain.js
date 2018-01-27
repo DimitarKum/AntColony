@@ -10,6 +10,39 @@ AntColony.Terrain = {
     Forest: 5
 };
 
+// Tiles.png mapping
+// AntColony.TerrainLocation = {
+//     1: 4, //Earth
+//     2: 3, //Grass
+//     3: 7, //Water
+//     4: 0, //Rock
+//     5: 2, //Forest
+// };
+
+// ProjectUtumno_full mapping
+AntColony.TerrainLocation = {
+    1: { //Earth
+        x: 44,
+        y: 7
+    },
+    2: { //Grass
+        x: 14,
+        y: 9
+    },
+    3: { //Water
+        x: 24,
+        y: 4
+    },
+    4: { //Rock
+        x: 45,
+        y: 2
+    },
+    5: { //Forest
+        x: 49,
+        y: 5
+    },
+};
+
 AntColony.Tile = function(params){
     AntColony.validateParams(params, "terrainType", "gridX", "gridY", "scale");
     this.terrainType = params.terrainType;
@@ -22,11 +55,24 @@ AntColony.Tile = function(params){
     this.height = params.scale;
     this.isChanged = true;
 
+    // const animation = new AntColony.Animation({
+    //     entity: this,
+    //     spriteSheet: "./assets/Tiles.png",
+    //     frameStartX: 32 * AntColony.TerrainLocation[this.terrainType],
+    //     frameStartY: 832,
+    //     frameWidth: 32,
+    //     frameHeight: 32,
+    //     sheetWidth: params.scale,
+    //     frameCount: 1,
+    //     framesPerSecond: 0
+    // });
+
+    // ProjectUtumno_full mapping
     const animation = new AntColony.Animation({
         entity: this,
-        spriteSheet: "./assets/Tiles.png",
-        frameStartX: 32 * this.terrainType,
-        frameStartY: 832,
+        spriteSheet: "./assets/ProjectUtumno_full.png",
+        frameStartX: 32 * AntColony.TerrainLocation[this.terrainType].x,
+        frameStartY: 32 * AntColony.TerrainLocation[this.terrainType].y,
         frameWidth: 32,
         frameHeight: 32,
         sheetWidth: params.scale,
