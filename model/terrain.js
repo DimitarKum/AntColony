@@ -173,7 +173,7 @@ AntColony.createTiles = function(params){
         // validateParams(params, "currentElement", "i", "j");
         if(AntColony.drawOdds({
             odds: 1,
-            outOf: 50
+            outOf: 28
         })){
             AntColony.startAnIsle({
                 tileGrid: tileGrid,

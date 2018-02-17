@@ -10,16 +10,16 @@
     /*cursor:        none;*/
     border-top:     10px solid darkgray;
     border-right:   10px solid darkgray;
-    background: #050522;
-    /*background:     black;*/
+    background:     #050530;
     vertical-align: bottom;
 }
 
 #interfaceCanvasBottom{
     /*cursor:        none;*/
     border-left:    10px solid darkgray; 
-    border-right:   10px solid darkgray; 
+    border-right:   10px solid darkgray;
     border-bottom:  10px solid darkgray;
-    background: #050522;
-    /*background:     black*/
+    background:     #050530;
+    /*background:     #FFFFFF;*/
+
 }

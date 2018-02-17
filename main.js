@@ -2,11 +2,8 @@
 // Global namespace AntColony
 var AntColony = AntColony || {};
 
-
-// fork in a branch called gh-pagess
 $('document').ready(function(){
     AntColony.assetManager = new AssetManager();
-    // const assetManager = new AssetManager();
 
     AntColony.queueAllAssets();
     AntColony.assetManager.downloadAll(function(){
@@ -15,43 +12,88 @@ $('document').ready(function(){
 });
 
 AntColony.queueAllAssets = function(){
+    // Tiles:
     AntColony.assetManager.queueDownload("./assets/Tiles.png");
-    AntColony.assetManager.queueDownload("./assets/MoundMovement.png");
-    AntColony.assetManager.queueDownload("./assets/MoundMovementTinted.png");
-    AntColony.assetManager.queueDownload("./assets/moundIcon.png");
-    AntColony.assetManager.queueDownload("./assets/redX.png");
+
+    // AntColony.assetManager.queueDownload("./assets/moundIcon.png");
+    // AntColony.assetManager.queueDownload("./assets/BuildingAnimations/MoundMovementTinted.png");
+    // AntColony.assetManager.queueDownload("./assets/BuildingIcons/AntTrail_Curves1.png");
+    // AntColony.assetManager.queueDownload("./assets/BuildingAnimations/AntTrail_Curves1.png");
+    // AntColony.assetManager.queueDownload("./assets/BuildingAnimations/AntTrail_Curves1Shadow.png");
+    
+    // AntColony.assetManager.queueDownload("./assets/BuildingAnimations/AntTrail_Curves2.png");
+
+
+    // Building Animations:
+    AntColony.assetManager.queueDownload("./assets/BuildingAnimations/moundMovement.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingAnimations/beetleFarm.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingAnimations/treeInfestation.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingAnimations/pebbleQuarry.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingAnimations/well.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingAnimations/raspberryFarm.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingAnimations/grasshopperMeadow.png");
+
+    // Resource Icons:
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/beetles.png");
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/fertilizer.png");
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/grazedGrass2.png");
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/leaves.png");
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/pebbles2.png");
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/pebbles.png");
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/population.png");
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/raspberries.png");
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/waterBuckets.png");
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/woodChips2.png");
+    AntColony.assetManager.queueDownload("./assets/ResourceIcons/woodChips.png");
+
+    //Items:
+    AntColony.assetManager.queueDownload("./assets/Items/fertilizer.png");
+    AntColony.assetManager.queueDownload("./assets/Items/grazedGrass.png");
+    AntColony.assetManager.queueDownload("./assets/Items/leaf.png");
+    AntColony.assetManager.queueDownload("./assets/Items/pebbles.png");
+    AntColony.assetManager.queueDownload("./assets/Items/raspberries.png");
+    AntColony.assetManager.queueDownload("./assets/Items/beetle.png");
+    AntColony.assetManager.queueDownload("./assets/Items/waterBucket.png");
+    AntColony.assetManager.queueDownload("./assets/Items/woodChips.png");
+
+    // Building Icons:
+    AntColony.assetManager.queueDownload("./assets/BuildingIcons/redX.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingIcons/antMound.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingIcons/beetleFarm.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingIcons/grasshopperMeadow.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingIcons/pebbleQuarry.jpg");
+    // AntColony.assetManager.queueDownload("./assets/BuildingIcons/pebbleQuarry.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingIcons/raspberryFarm.png");
+    // AntColony.assetManager.queueDownload("./assets/BuildingIcons/treeInfestation.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingIcons/treeInfestation.jpg");
+    AntColony.assetManager.queueDownload("./assets/BuildingIcons/well.jpg");
+    // AntColony.assetManager.queueDownload("./assets/BuildingIcons/well.png");
+
+
+    // Tiles:
     AntColony.assetManager.queueDownload("./assets/ProjectUtumno_full.png");
 };
 
 AntColony.init = function(){
     const canvas = $("#gameWorld")[0];
     const ctx = canvas.getContext("2d");
+    const engine = new AntColony.Engine({});
 
-    const gridWidth = 128, gridHeight = 128, scale = 32,
-        viewingWidth = 22 * scale, viewingHeight = 18 * scale;
+    const gridWidth = 128, gridHeight = 128, scale = 54,
+        viewingWidth = 21 * scale, viewingHeight = 10 * scale;
+    AntColony.Globals.Scale = scale;
 
     canvas.width = viewingWidth ;
     canvas.height = viewingHeight;
 
 
     const interfaceCanvasSide = $("#interfaceCanvasSide")[0];
-    interfaceCanvasSide.width = 8 * scale;
+    interfaceCanvasSide.width = 6 * scale;
     interfaceCanvasSide.height = viewingHeight;
 
-
     const interfaceCanvasBottom = $("#interfaceCanvasBottom")[0];
-    interfaceCanvasBottom.width = viewingWidth + 8 * scale;
-    interfaceCanvasBottom.height = 4 * scale;
-    AntColony.displayInformation({
-        context: interfaceCanvasBottom.getContext("2d"),//interfaceCanvasBottom.getContext("2d"),
-        scale: scale
-    });
-
-
-    // interfaceCanvasBottom.getContext("2d").font = "30px Comic Sans";
-    // interfaceCanvasBottom.getContext("2d").textAlign = "center";
-    // interfaceCanvasBottom.getContext("2d").fillStyle = "red";
-    // interfaceCanvasBottom.getContext("2d").strokeText("Interface Panel",0,0);
+    interfaceCanvasBottom.width = viewingWidth + interfaceCanvasSide.width;
+    interfaceCanvasBottom.height = 3 * scale;
 
 
     const camera = new AntColony.Camera({
@@ -73,33 +115,43 @@ AntColony.init = function(){
         height: gridHeight,
         scale: scale,
         camera: camera
-        // canvas: canvas
+    });
+
+    AntColony.Globals.Board = board;
+    engine.registerComponent({
+        component: board,
+        context: ctx
     });
 
     const player = new AntColony.Player({
         board: board,
-        gameWorld: canvas
+        gameWorld: canvas,
+        scale: scale
     });
+    AntColony.Globals.Player = player;
     const mouseBinder = new AntColony.MouseSpaceBinder({canvas: interfaceCanvasSide});
     const buildingPanel = new AntColony.BuildingPanel({
         scale: scale,
         canvas: interfaceCanvasSide,
         mouseBinder: mouseBinder,
-        player: player
+        player: player,
+        descriptionsCanvas: interfaceCanvasBottom
     });
     buildingPanel.init();
 
-    const engine = new AntColony.Engine({
-        canvas: canvas,
-        context: ctx,
-        board: board,
-        gameSpeed: 1,
-        frameRate: 28
-        // userInterface: userInterface
+    const resourcePanel = new AntColony.ResourcePanel({
+        scale: scale,
+        player: player
     });
+    engine.registerComponent({
+        component: resourcePanel,
+        context: interfaceCanvasBottom.getContext("2d")
+    });
+    player.addListener({listener: resourcePanel});
 
 
-    engine.start();
+
+
 
     const controlMapper = new AntColony.ControlMapper();
 
@@ -120,6 +172,7 @@ AntColony.init = function(){
     });
 
     playerBoardController.start();
+    engine.start();
 };
 
 
@@ -133,25 +186,4 @@ function getMousePos(canvas, evt) {
     };
 };
 
-AntColony.displayInformation = function(params){
-    AntColony.validateParams(params, "context", "scale");
-
-    const drawText = function(context){
-        // ctx.save();
-        // ctx.beginPath();
-        context.font = params.scale + "px Times New Roman";
-        context.fillStyle = "#B0B000";
-        context.fillText("Use arrow key to move camera in the world.", params.scale, params.scale);
-        context.fillText("You can build an AntMound or demolish an AntMound", params.scale, params.scale * 2);
-        context.fillText("using the icons on the right side.", params.scale, params.scale * 3);
-
-        // ctx.closePath();
-        // ctx.restore();
-    };
-    window.requestAnimationFrame(function(timestamp){
-        drawText(params.context);
-    });
-    // window.setInterval(function(){
-    //     drawText(params.context);
-    // }, 5);
-};
+AntColony.Globals = {};

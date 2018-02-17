@@ -63,17 +63,25 @@ AntColony.PlayerBoardController.prototype.start = function() {
                         buildingType: that.player.getSelectedBuildingType(),
                         scale: that.scale
                     });
-                    that.board.addBuilding(buildingToAdd);
-                    buildingToAdd.changePosition({
-                        x: buildingShadow.x,
-                        y: buildingShadow.y
-                    });
+                    const buildingCost = buildingToAdd.cost, bonusOnBuild = buildingToAdd.bonusOnBuild;
+                    if(that.player.hasResources({cost: buildingCost})){
+                        that.player.pay({cost: buildingCost});
+                        that.player.addResources({resources: bonusOnBuild})
+                        that.board.addBuilding(buildingToAdd);
+
+                        // that.player.addResources({
+                        //     resourceType: AntColony.ResourceTypes.Population,
+                        //     quantity: 5
+                        // });
+                        buildingToAdd.changePosition({
+                            x: buildingShadow.x,
+                            y: buildingShadow.y
+                        });
+                    }
+                    
                 }
-                
-                // that.buildingPanel.deselectBuildings();
                 break;
             case AntColony.Player.State.DEMOLISH:
-                console.log("demolish click");
                 const mousePosition = AntColony.Camera.instance.getMousePosition({
                     canvas: that.canvas,
                     event: event

@@ -38,6 +38,52 @@ AntColony.Board.prototype.init = function(){
     });
 };
 
+AntColony.Board.prototype.addItem = function(itemToAdd){
+    itemToAdd.isChanged = true;
+    itemToAdd.regionsOccupied = [];
+    const camera = this.camera;
+    itemToAdd.hasChanged = function(){
+        itemToAdd.regionsOccupied.forEach(function(region){
+            region.setChanged();
+        });
+    };
+    
+    const that = this;
+    itemToAdd.changePosition = function(params){
+        // AntColony.validateParams(params, "x", "y");
+        const x = params.x, y = params.y;
+        itemToAdd.hasChanged();
+        itemToAdd.regionsOccupied.forEach(function(region){
+            region.items.remove(itemToAdd);
+        });
+
+        itemToAdd.x = x;
+        itemToAdd.y = y;
+        itemToAdd.regionsOccupied = that.getRegionsForBox({
+            x: itemToAdd.x,
+            y: itemToAdd.y,
+            width: itemToAdd.width,
+            height: itemToAdd.height
+        });
+        itemToAdd.regionsOccupied.forEach(function(region){
+            region.items.push(itemToAdd);
+        });
+        itemToAdd.isChanged = false;
+        itemToAdd.hasChanged();
+    };
+
+    this.items.push(itemToAdd);
+    itemToAdd.changePosition({
+        x: itemToAdd.x, 
+        y: itemToAdd.y
+    });
+
+
+};
+
+AntColony.Board.prototype.getBuildings = function(){
+    return this.buildings;
+};
 AntColony.Board.prototype.addBuilding = function(buildingToAdd){
     // TODO: Add hasChanged and changePosition to the building
     buildingToAdd.isChanged = true;
@@ -63,8 +109,8 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
         buildingToAdd.regionsOccupied = that.getRegionsForBox({
             x: buildingToAdd.x,
             y: buildingToAdd.y,
-            width: that.scale,
-            height: that.scale
+            width: buildingToAdd.width,
+            height: buildingToAdd.height
         });
         buildingToAdd.regionsOccupied.forEach(function(region){
             region.buildings.push(buildingToAdd);
@@ -80,6 +126,14 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
     });
 };
 
+AntColony.Board.prototype.removeItem = function(params){
+    AntColony.validateParams(params, "itemToRemove");
+    params.itemToRemove.changePosition({
+        x: -10 * this.scale,
+        y: -10 * this.scale
+    });
+    this.items.remove(params.itemToRemove);
+};
 AntColony.Board.prototype.removeBuilding = function(params){
     AntColony.validateParams(params, "buildingToRemove");
     params.buildingToRemove.changePosition({
@@ -115,8 +169,8 @@ AntColony.Board.prototype.setBuildingShadow = function(buildingShadow){
         buildingShadow.regionsOccupied = that.getRegionsForBox({
             x: buildingShadow.x,
             y: buildingShadow.y,
-            width: that.scale,
-            height: that.scale
+            width: buildingShadow.width,
+            height: buildingShadow.height
         });
         buildingShadow.regionsOccupied.forEach(function(region){
             region.buildings.push(buildingShadow);
@@ -190,7 +244,7 @@ AntColony.Board.prototype.draw = function(params){
     });
 
     this.items.forEach(function(item){
-        this.item.draw(params);
+        item.draw(params);
     });
 
     if(this.buildingShadow && this.buildingShadow.isChanged){
@@ -256,11 +310,11 @@ AntColony.Board.prototype.getRegionsForBox = function(params){
     //         }
     //     }
     // }
-    for(let i = 0; i <= params.width; i += this.scale){
-        for(let j = 0; j <= params.height; j += this.scale){
+    for(let i = 1; i <= params.width; i += this.scale){
+        for(let j = 1; j <= params.height; j += this.scale ){
             const optionalRegion = this.getRegionForCoordinate({
                 x: params.x + i,
-                y: params.y + j   
+                y: params.y + j
             });
             if(optionalRegion.isPresent()){
                 regions.push(optionalRegion.getValue());
