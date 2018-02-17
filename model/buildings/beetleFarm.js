@@ -18,18 +18,18 @@ AntColony.BeetleFarm = function(params){
         framesPerSecond: 0
     });
     const cost = [
-        [AntColony.ResourceTypes.WoodChips, 20],
+        [AntColony.ResourceTypes.WoodChips, 120],
         [AntColony.ResourceTypes.Population, 2]
     ];
     const bonusOnBuild = [
     ];
     const upkeep = [
-        [AntColony.ResourceTypes.Leaves, 2],
-        [AntColony.ResourceTypes.WaterBuckets, 2]
+        [AntColony.ResourceTypes.Leaves, 8],
+        [AntColony.ResourceTypes.WaterBuckets, 8]
     ];
     const production = [
-        [AntColony.ResourceTypes.TastyBeetles, 3],
-        [AntColony.ResourceTypes.Fertilizer, 3]
+        [AntColony.ResourceTypes.TastyBeetles, 4],
+        [AntColony.ResourceTypes.Fertilizer, 2]
     ];
     AntColony.Building.call(this, {
         animation: animation,

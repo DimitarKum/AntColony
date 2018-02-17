@@ -66,7 +66,7 @@ AntColony.PlayerBoardController.prototype.start = function() {
                     const buildingCost = buildingToAdd.cost, bonusOnBuild = buildingToAdd.bonusOnBuild;
                     if(that.player.hasResources({cost: buildingCost})){
                         that.player.pay({cost: buildingCost});
-                        that.player.addResources({resources: bonusOnBuild})
+                        that.player.addResources({resources: bonusOnBuild});
                         that.board.addBuilding(buildingToAdd);
 
                         // that.player.addResources({
@@ -94,9 +94,13 @@ AntColony.PlayerBoardController.prototype.start = function() {
                     const region = optionalRegion.getValue();
                     const optionalBuilding = region.getBuilding();
                     if(optionalBuilding.isPresent()){
+                        const building = optionalBuilding.getValue();
                         that.board.removeBuilding({
-                            buildingToRemove: optionalBuilding.getValue()
+                            buildingToRemove: building
                         });
+                        that.player.addResources({resources: building.cost});
+                        that.player.dumpResourceBank({resourceBank: building.resourceBank});
+                        that.player.pay({cost: building.bonusOnBuild});
                     }
                 }
                 break;

@@ -18,11 +18,11 @@ AntColony.AntMound = function(params){
         framesPerSecond: 8
     });
     const cost = [
-        [AntColony.ResourceTypes.TastyBeetles, 10],
+        [AntColony.ResourceTypes.TastyBeetles, 25],
         [AntColony.ResourceTypes.Raspberries, 10]
     ];
     const bonusOnBuild = [
-        [AntColony.ResourceTypes.Population, 5]
+        [AntColony.ResourceTypes.Population, 6]
     ];
     const upkeep = [
         [AntColony.ResourceTypes.TastyBeetles, 1],

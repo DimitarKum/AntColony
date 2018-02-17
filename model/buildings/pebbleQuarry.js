@@ -18,7 +18,7 @@ AntColony.PebbleQuarry = function(params){
         framesPerSecond: 0
     });
     const cost = [
-        [AntColony.ResourceTypes.Population, 3]
+        [AntColony.ResourceTypes.Population, 4]
     ];
     const bonusOnBuild = [
     ];

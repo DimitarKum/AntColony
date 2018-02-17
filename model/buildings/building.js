@@ -49,7 +49,6 @@ AntColony.Building = function(params){
         }
         updates += 1;
         updates %= AntColony.BuildingConstats.ProductionPeriod;
-        console.log("GETTING " + this.resourceBank.hasResources({cost: this.upkeep}));
         if(updates === 0 && this.resourceBank.hasResources({cost: this.upkeep})){
             // console.log(this.upkeep);
             // console.log(this.resourceBank);

@@ -19,7 +19,7 @@ AntColony.Well = function(params){
     });
     const cost = [
         [AntColony.ResourceTypes.Population, 2],
-        [AntColony.ResourceTypes.Pebbles, 20]
+        [AntColony.ResourceTypes.Pebbles, 80]
     ];
     const bonusOnBuild = [
     ];

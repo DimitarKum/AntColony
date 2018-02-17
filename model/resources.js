@@ -109,14 +109,14 @@ AntColony.ResourceImage = {
 
 AntColony.InitialResources = {
     "Population": 0,
-    "WaterBuckets": 150,
-    "WoodChips": 150,
-    "TastyBeetles": 150,
-    "GrazedGrass": 150,
-    "Fertilizer": 150,
-    "Leaves": 150,
-    "Raspberries": 150,
-    "Pebbles": 150
+    "WaterBuckets": 0,
+    "WoodChips": 0,
+    "TastyBeetles": 100,
+    "GrazedGrass": 0,
+    "Fertilizer": 0,
+    "Leaves": 0,
+    "Raspberries": 40,
+    "Pebbles": 0
 };
 
 AntColony.InitialIncome = {
@@ -193,7 +193,6 @@ AntColony.ResourceBank.prototype.hasResources = function(params){
         // console.log("Cost: " + quantity);
         // console.log(that.resources[resourceType] < quantity);
         if(that.resources[resourceType] < quantity){
-            console.log("RETURNING FALSE");
             result = false;
             return;
         }
