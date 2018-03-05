@@ -19,6 +19,25 @@ AntColony.BuildingPanel = function(params) {
 AntColony.BuildingPanel.prototype.init = function(){
     const that = this;
 
+        // Instructions
+    const instructionsMenuItem = new AntColony.InstructionsMenuItem({
+        scale: this.scale
+    });
+    this.addBuildingMenuItem({
+        buildingMenuItem: instructionsMenuItem,
+        clickHandler: function(){
+                // height: 100px;
+    
+            $("#dialog").dialog({
+                width: 800,
+                resizable: false,
+                modal: true,
+                dialogClass: 'no-close'
+            });
+            $("#dialog").css({height:"500px", overflow: "auto"});
+        }
+    });
+
     // TODO: Refactor menuItems so their "clickHandler" function
     // does the work, not the buildingPanel.init method setting EVERYTHING up.
 
@@ -27,32 +46,87 @@ AntColony.BuildingPanel.prototype.init = function(){
         scale: this.scale
     });
     this.addBuildableMenuItem({buildingMenuItem: antMoundMenuItem});
-    const beetleFarmMenuItem = new AntColony.BeetleFarmMenuItem({
-        scale: this.scale
-    });
-    this.addBuildableMenuItem({buildingMenuItem: beetleFarmMenuItem});
-
     const pebbleQuarryMenuItem = new AntColony.PebbleQuarryMenuItem({
         scale: this.scale
     });
     this.addBuildableMenuItem({buildingMenuItem: pebbleQuarryMenuItem});
-
-    const raspberryFarmMenuItem = new AntColony.RaspberryFarmMenuItem({
-        scale: this.scale
-    });
-    this.addBuildableMenuItem({buildingMenuItem: raspberryFarmMenuItem});
-
     const treeInfestationMenuItem = new AntColony.TreeInfestationMenuItem({
         scale: this.scale
     });
     this.addBuildableMenuItem({buildingMenuItem: treeInfestationMenuItem});
+    const antTrailMenuItem = new AntColony.AntTrailMenuItem({
+        scale: this.scale
+    });
+    this.addBuildingMenuItem({
+        buildingMenuItem: antTrailMenuItem,
+        clickHandler: function(){
+            if(antTrailMenuItem.isSelected()){
+                that.deselectBuildings();
+                // antTrailMenuItem.deselect();
+            }else{
+                that.deselectBuildings();
+                that.player.setState(AntColony.Player.State.START_TRAIL);
+                antTrailMenuItem.select();
+                antTrailMenuItem.drawIcon({context: that.canvas.getContext("2d")});
+                const ctx = that.descriptionsCanvas.getContext("2d");
+                const startX = that.scale * 21.25;
+                ctx.beginPath();
+                ctx.save();
+                ctx.clearRect(
+                    startX,
+                    0,
+                    that.scale * 8,
+                    that.scale * 8
+                    );
+                const fontSize = Math.floor(that.scale * 0.30);
+                // ctx.font = "bold " + Math.floor(AntColony.Globals.Scale * 2.0) + "px Arial";
+                ctx.font = fontSize + "px Consolas";
+                ctx.fillStyle = "#F0A000";
+                ctx.fillText(
+                    "Costs:",
+                    startX,
+                    fontSize
+                );
+                ctx.fillText(
+                    "1 Population",
+                    startX,
+                    fontSize * 2.05
+                );
+                ctx.fillText(
+                    "Effect:",
+                    startX,
+                    fontSize * 3.50
+                );
+                ctx.fillText(
+                    "Tranports a resource between",
+                    startX,
+                    fontSize * 4.55
+                );
+                ctx.fillText(
+                    "2 buildings.",
+                    startX,
+                    fontSize * 5.60
+                );
+                ctx.restore();
+                ctx.closePath();
+            }
+        }
+    });
 
     const wellMenuItem = new AntColony.WellMenuItem({
         scale: this.scale
     });
     this.addBuildableMenuItem({buildingMenuItem: wellMenuItem});
 
+    const beetleFarmMenuItem = new AntColony.BeetleFarmMenuItem({
+        scale: this.scale
+    });
+    this.addBuildableMenuItem({buildingMenuItem: beetleFarmMenuItem});
 
+    const raspberryFarmMenuItem = new AntColony.RaspberryFarmMenuItem({
+        scale: this.scale
+    });
+    this.addBuildableMenuItem({buildingMenuItem: raspberryFarmMenuItem});
 
     // Demolish
     const demolishMenuItem = new AntColony.DemolishMenuItem({
@@ -69,15 +143,50 @@ AntColony.BuildingPanel.prototype.init = function(){
                 that.player.setState(AntColony.Player.State.DEMOLISH);
                 demolishMenuItem.select();
                 demolishMenuItem.drawIcon({context: that.canvas.getContext("2d")});
-                // that.drawIcons({
-                //     context: that.canvas.getContext("2d")
-                // });
+                const ctx = that.descriptionsCanvas.getContext("2d");
+                const startX = that.scale * 21.25;
+                ctx.beginPath();
+                ctx.save();
+                ctx.clearRect(
+                    startX,
+                    0,
+                    that.scale * 8,
+                    that.scale * 8
+                    );
+                const fontSize = Math.floor(that.scale * 0.30);
+                // ctx.font = "bold " + Math.floor(AntColony.Globals.Scale * 2.0) + "px Arial";
+                ctx.font = fontSize + "px Consolas";
+                ctx.fillStyle = "#F0A000";
+                ctx.fillText(
+                    "Effect:",
+                    startX,
+                    fontSize
+                );
+                ctx.fillText(
+                    "Demolish a building.",
+                    startX,
+                    fontSize * 3.05
+                );
+                ctx.fillText(
+                    "All resources are refunded.",
+                    startX,
+                    fontSize * 4.10
+                );
+                ctx.fillText(
+                    "Any connected trails are also",
+                    startX,
+                    fontSize * 5.15
+                );
+                ctx.fillText(
+                    "demolished and refunded.",
+                    startX,
+                    fontSize * 6.20
+                );
+                ctx.restore();
+                ctx.closePath();
             }
         }
     });
-    // console.log(antMoundMenuItem);
-    // console.log(demolishMenuItem);
-
     this.drawIcons({
         context: this.canvas.getContext("2d")
     });
@@ -95,8 +204,9 @@ AntColony.BuildingPanel.prototype.drawIcons = function(params){
 
 AntColony.BuildingPanel.prototype.addBuildingMenuItem = function(params){
     AntColony.validateParams(params, "buildingMenuItem", "clickHandler");
-    params.buildingMenuItem.iconX = this.startX + Math.floor(this.menuItems.length / 4) * (params.buildingMenuItem.width + this.scale * 1.55);
-    params.buildingMenuItem.iconY = this.startY + (this.menuItems.length % 4) * (params.buildingMenuItem.height + this.scale); //TODO: + .count *.... 
+    const rows = 5;
+    params.buildingMenuItem.iconX = this.startX + Math.floor(this.menuItems.length / rows) * (params.buildingMenuItem.width + this.scale * 1.55);
+    params.buildingMenuItem.iconY = this.startY + (this.menuItems.length % rows) * (params.buildingMenuItem.height + this.scale); //TODO: + .count *.... 
 
     const that = this;
     this.mouseBinder.bindRegionToEvent({

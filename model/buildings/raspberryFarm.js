@@ -18,17 +18,17 @@ AntColony.RaspberryFarm = function(params){
         framesPerSecond: 0
     });
     const cost = [
-        [AntColony.ResourceTypes.Population, 6],
-        [AntColony.ResourceTypes.WoodChips, 200]
+        // [AntColony.ResourceTypes.Population, 6],
+        [AntColony.ResourceTypes.WoodChips, 30]
     ];
     const bonusOnBuild = [
     ];
     const upkeep = [
-        [AntColony.ResourceTypes.WaterBuckets, 20],
-        [AntColony.ResourceTypes.Fertilizer, 4]
+        [AntColony.ResourceTypes.WaterBuckets, 8],
+        [AntColony.ResourceTypes.Fertilizer, 6]
     ];
     const production = [
-        [AntColony.ResourceTypes.Raspberries, 5]
+        [AntColony.ResourceTypes.Raspberries, 1]
     ];
     AntColony.Building.call(this, {
         animation: animation,
@@ -37,6 +37,7 @@ AntColony.RaspberryFarm = function(params){
         upkeep: upkeep,
         production: production,
         width: width,
-        height: height
+        height: height,
+        buildTerrain: [AntColony.Terrain.Grass]
     });
 };

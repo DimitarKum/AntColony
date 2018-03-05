@@ -58,8 +58,10 @@ AntColony.queueAllAssets = function(){
 
     // Building Icons:
     AntColony.assetManager.queueDownload("./assets/BuildingIcons/redX.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingIcons/antTrail.png");
     AntColony.assetManager.queueDownload("./assets/BuildingIcons/antMound.png");
     AntColony.assetManager.queueDownload("./assets/BuildingIcons/beetleFarm.png");
+    AntColony.assetManager.queueDownload("./assets/BuildingIcons/instructions2.png");
     AntColony.assetManager.queueDownload("./assets/BuildingIcons/grasshopperMeadow.png");
     AntColony.assetManager.queueDownload("./assets/BuildingIcons/pebbleQuarry.jpg");
     // AntColony.assetManager.queueDownload("./assets/BuildingIcons/pebbleQuarry.png");

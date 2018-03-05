@@ -6,6 +6,7 @@
 
     <!-- Utilities: -->
     <script type="text/javascript" src="./utilities/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="./utilities/jquery-ui.js"></script>
     <script type="text/javascript" src="./utilities/validation.js"></script>
     <script type="text/javascript" src="./utilities/optional.js"></script>
     <script type="text/javascript" src="./utilities/array.js"></script>
@@ -18,6 +19,7 @@
     <script type="text/javascript" src="./model/player.js"></script>
     <script type="text/javascript" src="./model/terrain.js"></script>
     <script type="text/javascript" src="./model/resources.js"></script>
+    <script type="text/javascript" src="./model/antTrail.js"></script>
     <script type="text/javascript" src="./model/buildings/buildings.js"></script>
     <script type="text/javascript" src="./model/buildings/building.js"></script>
     <script type="text/javascript" src="./model/buildings/antMound.js"></script>
@@ -47,12 +49,14 @@
     <script type="text/javascript" src="./view/userInterface/buildingPanel.js"></script>
     <script type="text/javascript" src="./view/userInterface/antMoundMenuItem.js"></script>
     <script type="text/javascript" src="./view/userInterface/beetleFarmMenuItem.js"></script>
+    <script type="text/javascript" src="./view/userInterface/instrucionsMenuItem.js"></script>
     <script type="text/javascript" src="./view/userInterface/grasshopperMeadowMenuItem.js"></script>
     <script type="text/javascript" src="./view/userInterface/pebbleQuarryMenuItem.js"></script>
     <script type="text/javascript" src="./view/userInterface/raspberryFarmMenuItem.js"></script>
     <script type="text/javascript" src="./view/userInterface/treeInfestationMenuItem.js"></script>
     <script type="text/javascript" src="./view/userInterface/wellMenuItem.js"></script>
     <script type="text/javascript" src="./view/userInterface/demolishMenuItem.js"></script>
+    <script type="text/javascript" src="./view/userInterface/antTrailMenuItem.js"></script>
     <script type="text/javascript" src="./view/userInterface/resourcePanel.js"></script>
 
     <!-- Controller: -->
@@ -70,5 +74,33 @@
      --><canvas id="interfaceCanvasSide" width="100" height="100"></canvas><!-- Removes space between canvases
      --></br><!-- Removes space between canvases
      --><canvas id="interfaceCanvasBottom" width="800" height="100"></canvas>
+    <div id="dialog" title="Instructions" background="black" display="none">
+        <p>
+            <b>Game Goal:</b></br>
+            &nbsp;&nbsp;&nbsp;This is a sandbox city-builder game. You can attempt to achieve the highest economy in  
+            a given time, build as many AntMounds as you can. A suggested goal is try to gather as many Raspberries as you can in 10 minutes without using Demolish.</br></br>
+            <b>How to Play:</b></br>
+            &nbsp;&nbsp;&nbsp;You can move the camera in the game world using the arrow keys.</br> 
+            &nbsp;&nbsp;&nbsp;You can select a building to build from the menu. When you select a building, a small description will appear containg information about the building cost, bonus on build (what you get instantly when you build it), production requirements and production.</br>
+            &nbsp;&nbsp;&nbsp;The production requirements are all the resources the building needs to have in storage to begin production.</br></br>
+            <b>Building Placement:</b></br>
+            &nbsp;&nbsp;&nbsp;Some buldings can only be placed on certain tiles. Tile types are Earth(Light-Brown), Grass(Light-Green), Water(Blue), Rock(Grey) and Forest(Dark-Green). Building placements are as follows:</br></br>
+            Ant Mound - Earth, Grass, Forest</br>
+            Pebble Quarry - Rock</br>
+            Tree Infestation - Forest</br>
+            Ant Trail - Connects any two building over any tiles.</br>
+            Water Well - Water</br>
+            Beetle Farm - Earth, Grass, Forest</br>
+            Raspberry Farm - Grass
+            </br></br>
+            <b>Moving Resources:</b></br>
+            &nbsp;&nbsp;&nbsp;When you first build a building such as Tree Infestation it produce its production resources (WoodChips and Leaves) and drops them next to the building. The building will not produce any further resources of the type until the resource is moved away from the building. In order to move a resource from one building to another you need to connect them with an Ant Trail. You can only connect two buildings when one of them produces a resource that the other one needs.</br>
+            &nbsp;&nbsp;&nbsp;You can also connect a Pebble Quarry, Tree Infestation, Beetle Farm or a Raspberry Farm to an AntMound to begin accumulating their resources globally so you can use them to build other buildings.</br></br>
+            <b>Demolish:</b></br>
+            &nbsp;&nbsp;&nbsp;You can demolish buildings for a full refund. Demolish will also remove and refund any trails connected to the building being demolished.</br></br>
+            <b>Hint:</b></br>
+            &nbsp;&nbsp;&nbsp;The map is randomly generated when you load the page. Some maps will be better (resource diversity etc.). Look around the map before starting to build to make sure you have everything you need.</br>
+        </p>
+    </div>
 </body>
 </html>

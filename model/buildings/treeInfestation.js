@@ -18,7 +18,7 @@ AntColony.TreeInfestation = function(params){
         framesPerSecond: 0
     });
     const cost = [
-        [AntColony.ResourceTypes.Population, 3]
+        [AntColony.ResourceTypes.Population, 1]
     ];
     const bonusOnBuild = [
     ];
@@ -35,6 +35,7 @@ AntColony.TreeInfestation = function(params){
         upkeep: upkeep,
         production: production,
         width: width,
-        height: height
+        height: height,
+        buildTerrain: [AntColony.Terrain.Forest]
     });
 };

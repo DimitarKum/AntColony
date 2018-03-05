@@ -25,6 +25,8 @@ AntColony.Board = function(params){
     this.items = [];
 
     this.buildingShadow = null;
+
+    this.textEffects = [];
 };
 
 AntColony.Board.prototype.init = function(){
@@ -36,6 +38,11 @@ AntColony.Board.prototype.init = function(){
             value: new AntColony.Region({tile: tile, scale: that.scale, camera: that.camera})
         });
     });
+};
+
+AntColony.Board.prototype.addTextEffect = function(params){
+    AntColony.validateParams(params, "text", "duration");
+    this.textEffects.push(params);
 };
 
 AntColony.Board.prototype.addItem = function(itemToAdd){
@@ -84,6 +91,11 @@ AntColony.Board.prototype.addItem = function(itemToAdd){
 AntColony.Board.prototype.getBuildings = function(){
     return this.buildings;
 };
+
+AntColony.Board.prototype.addTrail = function(trailToAdd){
+    this.trails.push(trailToAdd);
+};
+
 AntColony.Board.prototype.addBuilding = function(buildingToAdd){
     // TODO: Add hasChanged and changePosition to the building
     buildingToAdd.isChanged = true;
@@ -94,7 +106,17 @@ AntColony.Board.prototype.addBuilding = function(buildingToAdd){
             region.setChanged();
         });
     };
+
+    buildingToAdd.select = function(){
+        buildingToAdd.isSelected = true;
+        buildingToAdd.isChanged = true;
+    };
     
+    buildingToAdd.deselect = function(){
+        buildingToAdd.isSelected = false;
+        buildingToAdd.isChanged = true;
+    };
+
     const that = this;
     buildingToAdd.changePosition = function(params){
         // AntColony.validateParams(params, "x", "y");
@@ -140,8 +162,25 @@ AntColony.Board.prototype.removeBuilding = function(params){
         x: -10 * this.scale,
         y: -10 * this.scale
     });
-    this.buildings.remove(params.buildingToRemove);
 
+    const that = this;
+
+    params.buildingToRemove.trails.forEach(function(trail){
+        if(trail.consumer !== params.buildingToRemove){
+            trail.consumer.trails.remove(trail);
+        }
+        if(trail.producer !== params.buildingToRemove){
+            trail.producer.trails.remove(trail);
+        }
+        if(trail.itemCarried){
+            that.removeItem({itemToRemove: trail.itemCarried});
+        }
+        that.trails.remove(trail);
+    });
+    params.buildingToRemove.producedItems.forEach(function(item){
+        that.removeItem({itemToRemove: item});
+    });
+    this.buildings.remove(params.buildingToRemove);
 };
 
 // TODO: Refactored repeated code (almost same as addBuilding)
@@ -199,6 +238,9 @@ AntColony.Board.prototype.getBuildingShadow = function(){
 };
 
 AntColony.Board.prototype.update = function(){
+    this.trails.forEach(function(trail){
+        trail.update();
+    });
     this.buildings.forEach(function(building){
         building.update();
     });
@@ -208,6 +250,7 @@ AntColony.Board.prototype.update = function(){
 };
 
 AntColony.Board.prototype.draw = function(params){
+    const that = this;
     // AntColony.validateParams(params, "context", "timestamp");
     // console.log("FPS.");
     // Advance frames
@@ -222,7 +265,8 @@ AntColony.Board.prototype.draw = function(params){
     this.regionGrid.forEach(function(regionParams){
         // AntColony.validateParams(params, "regionParams", "i", "j");
         const tile = regionParams.currentElement.tile;
-        if(tile.isChanged){
+        // if(tile.isChanged){
+        if(that.camera.isOnScreen(tile)){
             // ++tileDrawn;
             tile.draw(params);
         }
@@ -238,21 +282,77 @@ AntColony.Board.prototype.draw = function(params){
 
     this.buildings.forEach(function(building){
         // TODO: Find out why camera.isOnScreen(building) returns false here
-        if(building.isChanged){
+        // if(building.isChanged){
+        if(that.camera.isOnScreen(building)){
             building.draw(params);
+            if(building.isSelected){
+                const ctx = params.context;
+                ctx.beginPath();
+                ctx.save();
+                ctx.strokeStyle = "#000000";
+                const borderWidth = 4;
+                ctx.lineWidth = borderWidth;
+                ctx.rect(
+                    building.x - that.camera.x + borderWidth,
+                    building.y - that.camera.y + borderWidth,
+                    building.width - 2 * borderWidth,
+                    building.height - 2 * borderWidth
+                );
+                ctx.closePath();
+                ctx.stroke();
+                ctx.restore();  
+            }
         }
     });
 
     this.items.forEach(function(item){
-        item.draw(params);
+        if(that.camera.isOnScreen(item)){
+            item.draw(params);
+        }
     });
 
-    if(this.buildingShadow && this.buildingShadow.isChanged){
+    this.trails.forEach(function(trail){
+        // if(that.camera.isOnScreen(trail)){
+            trail.draw(params);
+        // }
+    });
+
+    if(this.buildingShadow
+     // && this.buildingShadow.isChanged
+     ){
         this.buildingShadow.draw(params);
     }
 
+    let effectsToRemove = [];
+    let effectNumber = 0;
+    this.textEffects.forEach(function(textEffect){
+        const ctx = params.context;
+        ctx.beginPath();
+        ctx.save();
+        const fontSize = Math.floor(that.scale * .50);
+        // ctx.font = "bold " + Math.floor(AntColony.Globals.Scale * 2.0) + "px Arial";
+        ctx.font = "bold " + fontSize + "px Consolas";
+        ctx.fillStyle = "#FFF";
+        ctx.fillText(
+            textEffect.text,
+            that.scale * 1.5,
+            that.scale * 6 + (fontSize + 1) * effectNumber
+        );
+        ++effectNumber;
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+        --textEffect.duration;
+        if(textEffect.duration <= 0){
+            effectsToRemove.push(textEffect);
+        }
+    });
+    effectsToRemove.forEach(function(textEffect){
+        that.textEffects.remove(textEffect);
+    });
+
     // Make isChanged = false for all entities.
-    this.resetRegions();
+    // this.resetRegions();
 
     // const time2 = window.performance.now();
         // (new Date()).getTime();

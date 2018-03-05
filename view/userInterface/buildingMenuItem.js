@@ -10,8 +10,8 @@ AntColony.BuildingMenuItem = function(params){
     
     this.iconDX = this.scale * 1.05;
     this.iconDY = this.scale * 1.05;
-    this.width = this.iconDX;
-    this.height = this.iconDY;
+    this.width = this.iconDX * 0.9;
+    this.height = this.iconDY * 0.9;
     this.selectionState = AntColony.BuildingMenuItem.States.DESELECTED;
 
     const that = this;

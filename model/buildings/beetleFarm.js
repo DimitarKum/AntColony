@@ -18,18 +18,18 @@ AntColony.BeetleFarm = function(params){
         framesPerSecond: 0
     });
     const cost = [
-        [AntColony.ResourceTypes.WoodChips, 120],
-        [AntColony.ResourceTypes.Population, 2]
+        [AntColony.ResourceTypes.WoodChips, 30]
+        // [AntColony.ResourceTypes.Population, 2]
     ];
     const bonusOnBuild = [
     ];
     const upkeep = [
-        [AntColony.ResourceTypes.Leaves, 8],
-        [AntColony.ResourceTypes.WaterBuckets, 8]
+        [AntColony.ResourceTypes.Leaves, 4],
+        [AntColony.ResourceTypes.WaterBuckets, 2]
     ];
     const production = [
-        [AntColony.ResourceTypes.TastyBeetles, 4],
-        [AntColony.ResourceTypes.Fertilizer, 2]
+        [AntColony.ResourceTypes.TastyBeetles, 1],
+        [AntColony.ResourceTypes.Fertilizer, 1]
     ];
     AntColony.Building.call(this, {
         animation: animation,
@@ -38,6 +38,7 @@ AntColony.BeetleFarm = function(params){
         upkeep: upkeep,
         production: production,
         width: width,
-        height: height
+        height: height,
+        buildTerrain: [AntColony.Terrain.Earth, AntColony.Terrain.Grass, AntColony.Terrain.Forest]
     });
 };

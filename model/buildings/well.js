@@ -18,15 +18,15 @@ AntColony.Well = function(params){
         framesPerSecond: 0
     });
     const cost = [
-        [AntColony.ResourceTypes.Population, 2],
-        [AntColony.ResourceTypes.Pebbles, 80]
+        // [AntColony.ResourceTypes.Population, 2],
+        [AntColony.ResourceTypes.Pebbles, 30]
     ];
     const bonusOnBuild = [
     ];
     const upkeep = [
     ];
     const production = [
-        [AntColony.ResourceTypes.WaterBuckets, 2]
+        [AntColony.ResourceTypes.WaterBuckets, 1]
     ];
     AntColony.Building.call(this, {
         animation: animation,
@@ -35,6 +35,7 @@ AntColony.Well = function(params){
         upkeep: upkeep,
         production: production,
         width: width,
-        height: height
+        height: height,
+        buildTerrain: [AntColony.Terrain.Water] 
     });
 };

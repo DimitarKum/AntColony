@@ -111,7 +111,7 @@ AntColony.InitialResources = {
     "Population": 0,
     "WaterBuckets": 0,
     "WoodChips": 0,
-    "TastyBeetles": 100,
+    "TastyBeetles": 40,
     "GrazedGrass": 0,
     "Fertilizer": 0,
     "Leaves": 0,

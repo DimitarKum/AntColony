@@ -18,14 +18,14 @@ AntColony.PebbleQuarry = function(params){
         framesPerSecond: 0
     });
     const cost = [
-        [AntColony.ResourceTypes.Population, 4]
+        [AntColony.ResourceTypes.Population, 1]
     ];
     const bonusOnBuild = [
     ];
     const upkeep = [
     ];
     const production = [
-        [AntColony.ResourceTypes.Pebbles, 2]    
+        [AntColony.ResourceTypes.Pebbles, 1]    
     ];
     AntColony.Building.call(this, {
         animation: animation,
@@ -34,6 +34,7 @@ AntColony.PebbleQuarry = function(params){
         upkeep: upkeep,
         production: production,
         width: width,
-        height: height
+        height: height,
+        buildTerrain: [AntColony.Terrain.Rock] 
     });
 };

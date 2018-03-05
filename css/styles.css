@@ -21,5 +21,21 @@
     border-bottom:  10px solid darkgray;
     background:     #050530;
     /*background:     #FFFFFF;*/
+}
 
+#dialog{
+    color: #35FF10;
+    display: none;
+    background: #000;
+    border: 2px solid #000;
+    font-family: Consolas;
+    font-size: 18px;
+}
+
+.ui-widget-header {
+    background: #F0A000;
+    border: 2px solid #000;
+    color: #050530;
+    font-family: Consolas;
+    font-size: 30px;
 }

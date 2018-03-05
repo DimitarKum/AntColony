@@ -13,6 +13,16 @@ AntColony.BuildingTypes = {
     GrasshopperMeadow: 6
 };
 
+AntColony.BuildingNames = {
+    0: "Ant Mound",
+    1: "Tree Infestation",
+    2: "Pebble Quarry",
+    3: "Water Well",
+    4: "Beetle Farm",
+    5: "Raspberry Farm",
+    6: "Grasshopper Meadow"
+};
+
 AntColony.BuildingTypes.getBuildingForType = function(params) {
     AntColony.validateParams(params, "buildingType", "scale");
 

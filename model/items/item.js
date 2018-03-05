@@ -6,44 +6,48 @@ AntColony.Item = function(params){
     // AntColony.validateParams(params, "board", "resourceType", "animation", "quantity");
     const board = params.board;
     const resourceType = params.resourceType;
+    this.resourceType = resourceType;
     const that = this;
     const quantity = params.quantity;
+    this.quantity = quantity;
     this.update = function(params){
-        // AntColony.validateParams(params, );
-        // this.x += 5 - Math.floor(10 * Math.random());
-        // this.y += 5 - Math.floor(10 * Math.random());
-        let bestDistance = 999999999;
-        let closestBuilding = null;
-        board.getBuildings().forEach(function(building){
-            building.upkeep.forEach(function(resourceTypeQuantity){
-                const buildingResourceType = resourceTypeQuantity[0];
-                if(
-                    buildingResourceType === resourceType &&
-                    ((building.x - that.x) * (building.x - that.x) + (building.y - that.y) * (building.y - that.y)) < bestDistance
-                    ){
-                    bestDistance = ((building.x - that.x) * (building.x - that.x) + (building.y - that.y) * (building.y - that.y));
-                    closestBuilding = building;
-                }
-            });
-        });
+    //     // AntColony.validateParams(params, );
+    //     // this.x += 5 - Math.floor(10 * Math.random());
+    //     // this.y += 5 - Math.floor(10 * Math.random());
+    //     let bestDistance = 999999999;
+    //     let closestBuilding = null;
+    //     board.getBuildings().forEach(function(building){
+    //         building.upkeep.forEach(function(resourceTypeQuantity){
+    //             const buildingResourceType = resourceTypeQuantity[0];
+    //             if(
+    //                 buildingResourceType === resourceType &&
+    //                 ((building.x - that.x) * (building.x - that.x) + (building.y - that.y) * (building.y - that.y)) < bestDistance
+    //                 ){
+    //                 bestDistance = ((building.x - that.x) * (building.x - that.x) + (building.y - that.y) * (building.y - that.y));
+    //                 closestBuilding = building;
+    //             }
+    //         });
+    //     });
 
-        if(bestDistance < 36){
-            closestBuilding.resourceBank.addResources({
-                resources: [[resourceType, quantity]]
-            });
-            board.removeItem({itemToRemove: that});
-            return;
-        }
+    //     if(bestDistance < 36){
+    //         closestBuilding.resourceBank.addResources({
+    //             resources: [[resourceType, quantity]]
+    //         });
+    //         board.removeItem({itemToRemove: that});
+    //         return;
+    //     }
 
-        if(closestBuilding !== null){
-            const dx = (closestBuilding.x - this.x), dy = (closestBuilding.y - this.y);
-            const s = 0.8 / Math.sqrt(dx * dx + dy * dy);
-            const resultingDx = s * dx, resultingDy = s * dy;
-            this.changePosition({
-                x: this.x + resultingDx,
-                y: this.y + resultingDy
-            });
-        }
+    //     if(closestBuilding !== null){
+    // // AntColony.validateParams(params, "mover", "target", "speed");
+    //         AntColony.moveTo({mover: this, target: closestBuilding, speed: 0.8});
+    //         // const dx = (closestBuilding.x - this.x), dy = (closestBuilding.y - this.y);
+    //         // const s = 0.8 / Math.sqrt(dx * dx + dy * dy);
+    //         // const resultingDx = s * dx, resultingDy = s * dy;
+    //         // this.changePosition({
+    //         //     x: this.x + resultingDx,
+    //         //     y: this.y + resultingDy
+    //         // });
+    //     }
     };
     const animation = params.animation;
     this.draw = function(params){

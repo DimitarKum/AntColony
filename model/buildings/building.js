@@ -3,12 +3,11 @@
 var AntColony = AntColony || {};
 
 AntColony.BuildingConstats = {
-    ProductionPeriod: 60
+    ProductionPeriod: 125
 };
 
 AntColony.Building = function(params){
-    AntColony.validateParams(params, "animation", "cost", "bonusOnBuild", "upkeep", "production", "width", "height");
-
+    AntColony.validateParams(params, "animation", "cost", "bonusOnBuild", "upkeep", "production", "width", "height", "buildTerrain");
     this.x = 0;
     this.y = 0;
     this.width = params.width;
@@ -23,8 +22,12 @@ AntColony.Building = function(params){
 
     this.production = params.production;
 
+    this.producedItems = [];
     this.resourceBank = new AntColony.ResourceBank(true);
 
+    this.trails = [];
+
+    this.buildTerrain = params.buildTerrain;
     let updates = 0;
 
     this.draw = function(params){
@@ -53,24 +56,40 @@ AntColony.Building = function(params){
             // console.log(this.upkeep);
             // console.log(this.resourceBank);
             this.resourceBank.pay({cost: this.upkeep});
+            let buildingNumber = 0;
             this.production.forEach(function(resourceTypeQuantity){
                 const resourceType = resourceTypeQuantity[0], quantity = resourceTypeQuantity[1];
-                const item = AntColony.ItemTypes.getItemForResourceType({
-                    resourceType: resourceType,
-                    startingPosition:{
-                        x: that.x,
-                        y: that.y
-                    },
-                    quantity: quantity
-                });
-                AntColony.Globals.Board.addItem(item);
+                if(that.canProduce({resourceType: resourceType})){
+                    const item = AntColony.ItemTypes.getItemForResourceType({
+                        resourceType: resourceType,
+                        startingPosition:{
+                            x: that.x + Math.floor(buildingNumber * that.width / 2.0),
+                            y: that.y + Math.floor(that.height / 2.0)
+                        },
+                        quantity: quantity
+                    });
+                    ++buildingNumber;
+                    that.producedItems.push(item);
+                    AntColony.Globals.Board.addItem(item);
+                }
             });
         }
     };
 
+    this.canProduce = function(params){
+        AntColony.validateParams(params, "resourceType");
+        let result = true;
+        that.producedItems.forEach(function(item){
+            if(item.resourceType === params.resourceType){
+                result = false;
+            }
+        });
+        return result;
+    };
 
     this.asShadow = function(){
         this.isShadow = true;
         return this;
     };
 };
+

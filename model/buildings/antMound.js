@@ -18,21 +18,21 @@ AntColony.AntMound = function(params){
         framesPerSecond: 8
     });
     const cost = [
-        [AntColony.ResourceTypes.TastyBeetles, 25],
-        [AntColony.ResourceTypes.Raspberries, 10]
+        [AntColony.ResourceTypes.TastyBeetles, 20],
+        [AntColony.ResourceTypes.Raspberries, 8]
     ];
     const bonusOnBuild = [
-        [AntColony.ResourceTypes.Population, 6]
+        [AntColony.ResourceTypes.Population, 5]
     ];
     const upkeep = [
         [AntColony.ResourceTypes.TastyBeetles, 1],
         [AntColony.ResourceTypes.Raspberries, 1],
         [AntColony.ResourceTypes.WoodChips, 1],
         [AntColony.ResourceTypes.GrazedGrass, 1],
-        [AntColony.ResourceTypes.Fertilizer, 1],
-        [AntColony.ResourceTypes.Leaves, 1],
+        // [AntColony.ResourceTypes.Fertilizer, 1],
+        // [AntColony.ResourceTypes.Leaves, 1],
         [AntColony.ResourceTypes.Pebbles, 1],
-        [AntColony.ResourceTypes.WaterBuckets, 1]
+        // [AntColony.ResourceTypes.WaterBuckets, 1]
     ];
     const production = [
     ];
@@ -43,7 +43,8 @@ AntColony.AntMound = function(params){
         upkeep: upkeep,
         production: production,
         width: width,
-        height: height
+        height: height,
+        buildTerrain: [AntColony.Terrain.Earth, AntColony.Terrain.Grass, AntColony.Terrain.Forest] 
     });
     this.update = function(params){
         // console.log(this.resourceBank);
