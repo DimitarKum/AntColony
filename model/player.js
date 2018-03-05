@@ -86,7 +86,7 @@ AntColony.Player.prototype.resetSelectionState = function(){
     this.state = AntColony.Player.State.SELECT;
     this.selectedBuilding = AntColony.BuildingTypes.NO_BUILDING;
     this.board.removeBuildingShadow();
-    if(this.buildingTrailStart){
+    if(this.buildingTrailStart && this.buildingTrailStart.deselect){
        this.buildingTrailStart.deselect();
     }
 };

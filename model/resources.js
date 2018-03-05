@@ -110,13 +110,13 @@ AntColony.ResourceImage = {
 AntColony.InitialResources = {
     "Population": 0,
     "WaterBuckets": 0,
-    "WoodChips": 0,
-    "TastyBeetles": 40,
+    "WoodChips": 200,
+    "TastyBeetles": 200,
     "GrazedGrass": 0,
     "Fertilizer": 0,
     "Leaves": 0,
-    "Raspberries": 40,
-    "Pebbles": 0
+    "Raspberries": 120,
+    "Pebbles": 200
 };
 
 AntColony.InitialIncome = {

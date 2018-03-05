@@ -157,10 +157,12 @@ AntColony.PlayerBoardController.prototype.start = function() {
                         const optionalBuilding = region.getBuilding();
                         if(optionalBuilding.isPresent()){
                             const building = optionalBuilding.getValue();
-                            // console.log(building);
+                        // console.log(building);
                             that.player.buildingTrailStart = building;
-                            that.player.buildingTrailStart.select();
-                            that.player.state = AntColony.Player.State.FINISH_TRAIL;
+                            if(that.player.buildingTrailStart && that.player.buildingTrailStart.select){
+                                that.player.buildingTrailStart.select();
+                                that.player.state = AntColony.Player.State.FINISH_TRAIL;
+                            }
                         }
                     }
                 }else{
